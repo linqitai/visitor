@@ -13,11 +13,11 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    App._get('api/personInfo/testLink', {},
-      function (res) {//成功
-        console.log(res, "res")
-      }
-    )
+    // App._get('api/personInfo/testLink', {},
+    //   function (res) {//成功
+    //     console.log(res, "res")
+    //   }
+    // )
   },
   toLogin(){
     wx.navigateTo({

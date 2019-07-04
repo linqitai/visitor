@@ -1,56 +1,15 @@
 /* 搜索框组件 */
-@import "components/search/search.wxss";
-
-/* banner组件 */
-@import "components/banner/banner.wxss";
-.container{
-  height: 100%;
+/* @import "components/search/search.wxss"; */
+.title{
+  font-size: 32rpx;
+  font-weight: bold;
+  padding: 30rpx 20rpx 30rpx 15px;
+  height: 32rpx;
+  line-height: 32rpx;
 }
-.category-list .right .cont .title{
-  color: #646464;
-}
-.category-list .right .cont .goods_price{
-  color: #ff495e;
-  font-size: 26rpx;
-}
-.category-list .right .cont .single_price{
-  color: orange;
-}
-.page-column .content .line1{
-  color: #646464;
-}
-.page-column .content .line2{
-  color: #999;
-}
-.page-column .content .line3{
-  color:#E36A1E;
-}
-.cate{
-  background-color: white;
-  padding: 20rpx 0rpx 30rpx 0;
-  overflow: hidden;
-}
-.cate .cateItem{
-  float: left;
-  display: flex;
-  flex-direction: column;
-  width: 120rpx;
-  height: 120rpx;
-  padding: 0 15rpx;
-  margin-top: 10rpx;
-}
-.cate .cateItem .picBox{
-  text-align: center;
-}
-.cate .cateItem .pic{
-  width: 70rpx;
-  height: 70rpx;
-  border-radius: 70rpx;
-  background-color: forestgreen;
-}
-.cate .cateItem .name{
-  width: 100%;
-  font-size: 26rpx;
-  text-align: center;
-  color: #646464;
+.label{width: 90px !important;font-size: 32rpx;}
+.text{font-size: 32rpx;margin-left: 40px;}
+.wings_blank{
+  padding-left: 24rpx;
+  padding-right: 24rpx;
 }

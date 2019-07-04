@@ -28,6 +28,10 @@
 .flagFalse{
   color:#FF495E
 }
+.mt-20{margin-top: 20rpx;}
+.mt-40{margin-top: 40rpx;}
+.mt-60{margin-top: 60rpx;}
+
 .pd_b100{
   padding-bottom: 100rpx;
 }
@@ -1062,7 +1066,7 @@
 }
 
 .picker {
-  padding: 13px;
+  padding: 5px 15px;
   background-color: #fff;
 }
 

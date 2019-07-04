@@ -11,13 +11,13 @@ App({
     is_pifa_selected:false,
     tab_bar:[
       {
-        name:'首页',
-        icon:'home',
+        name:'预约登记',
+        icon:'register',
         is_show:true
       },
       {
-        name: '分类',
-        icon: 'category',
+        name: '历史浏览',
+        icon: 'history',
         is_show: true
       },
       {
@@ -26,7 +26,7 @@ App({
         is_show: false
       },
       {
-        name: '我的',
+        name: '个人中心',
         icon: 'person',
         is_show: true
       }
@@ -135,6 +135,13 @@ App({
    */
   setApiRoot: function() {
     this.api_root = this.siteInfo.siteroot;
+  },
+  isNull(value){
+    if (value == null || value == "") {
+      return 1;
+    }else{
+      return 0;
+    }
   },
   hasNull: function (params) {
     var keys = Object.keys(params);
