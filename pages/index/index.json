@@ -1,0 +1,9 @@
+{
+    "navigationBarTitleText": "访客系统",
+    "navigationBarBackgroundColor": "#228B22",
+    "navigationBarTextStyle": "white",
+    "usingComponents": {
+      "refresh-view": "/components/RefreshView/refresh-view",
+      "tab-bar": "/components/TabBar/tabbar"
+    }
+}
