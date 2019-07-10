@@ -9,6 +9,9 @@ App({
     cart1:0,
     cart2:0,
     is_pifa_selected:false,
+    sex_array: ['男', '女'],
+    reason_array: ['个人来访', '公务往来', '会议', '快递', '面试', '其他'],
+    number_array: ['1', '2', '3', '4', '5', '6', '多于6人'],
     tab_bar:[
       {
         name:'预约登记',
@@ -135,6 +138,21 @@ App({
    */
   setApiRoot: function() {
     this.api_root = this.siteInfo.siteroot;
+  },
+  // 获取完整的时间（年月日）
+  getDate(t) {
+    var time = new Date(t)
+    var y = time.getFullYear()
+    var m = time.getMonth() + 1
+    var d = time.getDate()
+    return y + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d)
+  },
+  // 获取完整的时间（时分）
+  getHM(t) {
+    var time = new Date(t)
+    var h = time.getHours()
+    var mm = time.getMinutes()
+    return(h < 10 ? '0' + h : h) + ':' + (mm < 10 ? '0' + mm : mm)
   },
   isNull(value){
     if (value == null || value == "") {

@@ -18,6 +18,22 @@ Page({
     windowHeight: '',
     maxlengthPhome: 11,
     maxlengthIdentityNumber:18,
+    CreateTime: "",
+    Name: "",
+    Sex: "",
+    Phone: "",
+    IdentityNumber: "",
+    Reason: "",
+    Number: "",
+    PlateNumber: "",
+    Unit: "",
+    DateTime: "",
+    Remark: "",
+    InvitorName: "",
+    InvitorDep: "",
+    CheckStatus: "",
+    Checker: "",
+    CheckDate: "",
     form:{
       Name: "",
       Sex: 0,
@@ -32,9 +48,6 @@ Page({
       EndTime: "",
       Remark:""
     },
-    sex_array: App.globalData.sex_array,
-    reason_array: App.globalData.reason_array,
-    number_array: App.globalData.number_array
   },
   onShow: function () {
     // 刷新组件
@@ -45,13 +58,41 @@ Page({
   },
   onLoad: function (options) {
     let _this = this;
+    console.log('item.CreateTime', options.CreateTime);
+    console.log('item.Name', options.Name);
     this.setData({
-      active: 0,
-      tab_bar: App.globalData.tab_bar
+      active: 1,
+      tab_bar: App.globalData.tab_bar,
+      CreateTime: options.CreateTime,
+      Name: options.Name,
+      Sex: App.globalData.sex_array[options.Sex],
+      Phone: options.Phone,
+      IdentityNumber: options.IdentityNumber,
+      Reason: App.globalData.reason_array[options.Reason],
+      Number: App.globalData.number_array[options.Number],
+      PlateNumber: options.PlateNumber,
+      Unit: options.Unit,
+      DateTime: options.DateTime,
+      Remark: options.Remark,
+      InvitorName: options.InvitorName,
+      InvitorDep: options.InvitorDep,
+      CheckStatus: options.CheckStatus == 0 ? "未审核" :"已审核",
+      Checker: options.Checker,
+      CheckDate: options.CheckDate,
+      Date: options.Date,
+      StartTime: options.StartTime,
+      EndTime: options.EndTime,
+      Remark: (options.Remark == 'null' || options.Remark == null) ? "--" : options.Remark
     })
+    console.log("data:",this.data)
     this.setData({ 'form.Date': App.getDate(new Date().getTime()) })
     this.setData({ 'form.StartTime': App.getHM(new Date().getTime()) })
     this.setData({ 'form.EndTime': "17:00" })
+  },
+  nullToLine: function (value) {
+    if (value == "" || value == null) {
+      return "--";
+    }
   },
   bindStartTimeChange: function (e) {
     console.log('picker发送选择改变，携带值为', e.detail.value);
@@ -84,11 +125,11 @@ Page({
     });
   },
   bindNumberPickerChange(e){
-    console.log('Number', e.detail.value)
+    console.log('number', e.detail.value)
     console.log('detail', e.detail)
     console.log('e', e)
     this.setData({
-      'form.Number': e.detail.value
+      'form.number': e.detail.value
     });
   },
   formSubmit(e){

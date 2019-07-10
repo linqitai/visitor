@@ -12,6 +12,7 @@
 .theme_color{
   color: #228B22;
 }
+.line{display: inline-block;width: 100%;}
 .right{
   float: right;
 }

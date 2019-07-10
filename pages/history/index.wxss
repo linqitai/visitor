@@ -18,5 +18,11 @@
 .form{
   width: 100%;
   height: auto;
-  margin-bottom: 140rpx;
+}
+.list{font-size: 30rpx;margin-bottom: 120rpx;}
+.list .item{
+  padding: 12rpx 24rpx;
+  background-color: white;
+  overflow: hidden;
+  margin-bottom: 8rpx;
 }

@@ -50,11 +50,11 @@ Component({
           break;
         case 1:
           App.globalData.is_pifa_selected = true
-          url = "/pages/pifa/index"
+          url = "/pages/history/index"
           break;
         case 2:
           App.globalData.is_pifa_selected = false
-          url = "/pages/category/index"
+          url = "/pages/history/index"
           if (App.globalData.userInfo.store_cert == 2 && active == 2) {
             url = "/pages/user/index"
           }

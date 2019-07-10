@@ -24,6 +24,11 @@ Page({
       url: '../login2/login2',
     })
   },
+  toDatePage(){
+    wx.navigateTo({
+      url: '../date/index',
+    })
+  },
   navigateBack: function () {
     wx.navigateBack();
     // let currentPage = wx.getStorageSync('currentPage');

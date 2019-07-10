@@ -3,6 +3,14 @@
 <scroll-view class="scroll" scroll-y="true">
   <view class='form'>
     <form bindsubmit="formSubmit">
+      <view class='title'>被访人信息</view>
+      <van-cell-group>
+        <van-field name="Phone" label="手机号" placeholder="对方手机号" border="{{ false }}"/>
+        <van-field name="Phone" label="手机号" placeholder="对方手机号" border="{{ false }}"/>
+      </van-cell-group>
+      <view class='wings_blank mt-20'>
+        <button class='submit' type="primary" formType="submit" size='default'> 查 询 </button>
+      </view>
       <view class='title'>访客信息</view>
       <van-cell-group>
         <van-field name="Name" label="访客姓名" placeholder="请输入您的姓名" border="{{ false }}"/>

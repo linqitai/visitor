@@ -17,78 +17,49 @@ Page({
     windowWidth: '',
     windowHeight: '',
     maxlengthPhome: 11,
-    maxlengthIdentityNumber:18,
+    maxlengthIndentityNumber:18,
     form:{
-      Name: "",
-      Sex: 0,
-      Phone: "",
-      IdentityNumber:"",
-      Reason:0,
-      Number:0,
-      PlateNumber:"",
-      Unit:"",
-      Date:"",
-      StartTime:"",
-      EndTime: "",
-      Remark:""
+      StartDate:"",
+      EndDate: "",
+      Phone:""
     },
-    sex_array: App.globalData.sex_array,
-    reason_array: App.globalData.reason_array,
-    number_array: App.globalData.number_array
+    count:0,
+    dataList:[],
+    sex_array: ['男', '女'],
+    reason_array: ['个人来访', '公务往来', '会议', '快递', '面试','其他'],
+    number_array: ['1', '2', '3', '4', '5', '6','多于6人']
   },
   onShow: function () {
     // 刷新组件
     this.refreshView = this.selectComponent("#refreshView")
-    // App._get("api/visitors/testLink",{},function(res){
-    //   console.log('res',res)
-    // })
+    wx.setNavigationBarTitle({
+      title: '历史浏览'
+    })
+    wx.setNavigationBarColor({
+      frontColor: '#ffffff', // 必写项
+      backgroundColor: "#228B22" // 传递的颜色值
+    })
   },
   onLoad: function (options) {
     let _this = this;
     this.setData({
-      active: 0,
+      active: 1,
       tab_bar: App.globalData.tab_bar
     })
-    this.setData({ 'form.Date': App.getDate(new Date().getTime()) })
-    this.setData({ 'form.StartTime': App.getHM(new Date().getTime()) })
-    this.setData({ 'form.EndTime': "17:00" })
+    console.log("history")
+    this.setData({ 'form.StartDate': App.getDate(new Date().getTime()-60*60*24*1000*7) })
+    this.setData({ 'form.EndDate': App.getDate(new Date().getTime()) })
   },
-  bindStartTimeChange: function (e) {
+  bindStartDateChange: function (e) {
     console.log('picker发送选择改变，携带值为', e.detail.value);
     this.setData({
-      'form.StartTime': e.detail.value
+      'form.StartDate': e.detail.value
     });
   },
-  bindEndTimeChange: function (e) {
+  bindEndDateChange: function (e) {
     console.log('picker发送选择改变，携带值为', e.detail.value);
     this.setData({
-      'form.EndTime': e.detail.value
-    });
-  },
-  bindDateChange: function (e) {
-    console.log('picker发送选择改变，携带值为', e.detail.value);
-    this.setData({
-      'form.Date':e.detail.value
-    });
-  },
-  bindSexPickerChange(e){
-    console.log('sex', e.detail.value)
-    this.setData({
-      'form.Sex': e.detail.value
-    });
-  },
-  bindReasonPickerChange(e) {
-    console.log('reason', e.detail.value)
-    this.setData({
-      'form.Reason': e.detail.value
-    });
-  },
-  bindNumberPickerChange(e){
-    console.log('Number', e.detail.value)
-    console.log('detail', e.detail)
-    console.log('e', e)
-    this.setData({
-      'form.Number': e.detail.value
+      'form.EndDate': e.detail.value
     });
   },
   formSubmit(e){
@@ -98,32 +69,29 @@ Page({
       form: e.detail.value
     });
     console.log('form', _this.data.form)
-    if (App.isNull(_this.data.form.Name)) {
-      App.showToast("访客姓名不可为空");return;
+    wx.showNavigationBarLoading()
+    let url="";
+    if (_this.data.form.Phone == "" || _this.data.form.Phone == null){
+      url ="api/visitors/getListByTime";
+    }else{
+      url = "api/visitors/getListByTimeAndPhone"
     }
-    if (App.isNull(_this.data.form.Phone)) {
-      App.showToast("手机号不可为空"); return;
-    }
-    if (App.isNull(_this.data.form.IdentityNumber)) {
-      App.showToast("证件号不可为空"); return;
-    }
-    App.showModel("提交后不得修改，您确定要提交此访客单吗？",function(){
-      console.log("确定");
-      // 下面调用接口
-      App._post_form("api/visitors/add",_this.data.form,function(res){
-        console.log("res",res)
-        let result = JSON.parse(res)
-        if(result.code==1){
-          App.showToast("数据提交成功");
-          wx.reLaunch({
-            url: '../history/index',
-          })
-        }else{
-          console.log("msg", result.msg)
-          App.showToast(result.msg);
-        }
-      })
+    App._post_form(url, _this.data.form, function (res) {
+      console.log("res", res)
+      wx.hideNavigationBarLoading()
+      let result = JSON.parse(res)
+      if (result.code == 1) {
+        console.log("data", result.data)
+        _this.setData({
+          count:result.count,
+          dataList:result.data
+        })
+      } else {
+        console.log("msg", result.msg)
+        App.showToast(result.msg);
+      }
     })
+    //wx.hideNavigationBarLoading()
   },
   to_shopcart_view(){
     wx.navigateTo({

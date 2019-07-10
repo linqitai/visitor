@@ -2,7 +2,7 @@
 
 <image class="img" src="../../images/logo.png"></image>
 <button class='btn1' type="warn"> 预约审批 </button>
+<button class='btn3' type="primary" bindtap="toDatePage"> 访客预约 </button>
 <button class='btn2 color-text-1' type="default" bindtap="toLogin"> 被访人预约 </button>
-<button class='btn3' type="primary" bindtap="toLogin"> 访客预约 </button>
 <view>{{dd}}</view>
 </view>
