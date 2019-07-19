@@ -1,6 +1,8 @@
 {
     "navigationBarTitleText": "个人中心",
     "usingComponents": {
-      "tab-bar": "/components/TabBar/tabbar"
+      "refresh-view": "/components/RefreshView/refresh-view",
+      "tab-bar": "/components/TabBar/tabbar",
+      "van-field": "/dist/field/index"
     }
 }

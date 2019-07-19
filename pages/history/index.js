@@ -21,8 +21,9 @@ Page({
     form:{
       StartDate:"",
       EndDate: "",
-      Phone:""
+      OpenId:""
     },
+    type: '',
     count:0,
     dataList:[],
     sex_array: ['男', '女'],
@@ -42,11 +43,14 @@ Page({
   },
   onLoad: function (options) {
     let _this = this;
+    console.log(App.globalData.tab_bar_type, "App.globalData.tab_bar_type")
     this.setData({
       active: 1,
-      tab_bar: App.globalData.tab_bar
+      tab_bar: App.getTab_bar(App.globalData.tab_bar_type),
+      type: App.globalData.tab_bar_type
     })
     console.log("history")
+    console.log('type', _this.data.type)
     this.setData({ 'form.StartDate': App.getDate(new Date().getTime()-60*60*24*1000*7) })
     this.setData({ 'form.EndDate': App.getDate(new Date().getTime()) })
   },
@@ -68,20 +72,38 @@ Page({
     _this.setData({
       form: e.detail.value
     });
+    console.log('App.globalData.tab_bar_type', App.globalData.tab_bar_type)
+    _this.setData({
+      'form.OpenId':wx.getStorageSync('openid')
+    });
+    // if (App.globalData.tab_bar_type=='out'){
+    //   console.log('_this.data.form.Phone',_this.data.form.Phone)
+    //   if (_this.data.form.Phone == 'null' || _this.data.form.Phone == '' || _this.data.form.Phone == null){
+    //     App.showToast('请输入您的手机号');
+    //     return;
+    //   }
+    // }
+    // if (App.globalData.tab_bar_type == 'in'){
+    //   console.log('App.globalData.userInfo.SMPhone', App.globalData.userInfo.SMPhone)
+    //   _this.setData({
+    //     'form.Phone': App.globalData.userInfo.SMPhone
+    //   });
+    // }
     console.log('form', _this.data.form)
-    wx.showNavigationBarLoading()
-    let url="";
-    if (_this.data.form.Phone == "" || _this.data.form.Phone == null){
-      url ="api/visitors/getListByTime";
-    }else{
-      url = "api/visitors/getListByTimeAndPhone"
-    }
+    let url = "api/visitors/getListByTimeAndOpenId"
+    // if (_this.data.form.Phone == "" || _this.data.form.Phone == null){
+    //   url ="api/visitors/getListByTime";
+    // }else{
+    //   url = "api/visitors/getListByTimeAndOpenId"
+    // }
     App._post_form(url, _this.data.form, function (res) {
-      console.log("res", res)
-      wx.hideNavigationBarLoading()
+      //console.log("res", res)
       let result = JSON.parse(res)
       if (result.code == 1) {
-        console.log("data", result.data)
+        //console.log("data", result.data)
+        if (result.count==0){
+          App.showToast("暂无记录")
+        }
         _this.setData({
           count:result.count,
           dataList:result.data

@@ -42,30 +42,54 @@ Component({
       console.log(event.detail,"active");
       let active = event.detail;
       let url = ''
-      console.log(App.globalData.userInfo.store_cert,"App.globalData.userInfo.store_cert")
-      switch (active) {
-        case 0:
-          App.globalData.is_pifa_selected = false
-          url = "/pages/index/index"
-          break;
-        case 1:
-          App.globalData.is_pifa_selected = true
-          url = "/pages/history/index"
-          break;
-        case 2:
-          App.globalData.is_pifa_selected = false
-          url = "/pages/history/index"
-          if (App.globalData.userInfo.store_cert == 2 && active == 2) {
+      //console.log(App.globalData.userInfo.store_cert,"App.globalData.userInfo.store_cert")
+      if (App.globalData.tab_bar_type=='in'){
+        switch (active) {
+          case 0:
+            url = "/pages/index/index"
+            break;
+          case 1:
+            url = "/pages/history/index"
+            break;
+          case 2:
             url = "/pages/user/index"
-          }
-          break;
-        case 3:
-          App.globalData.is_pifa_selected = false
-          url = "/pages/user/index"
-          break;
-        default:
-          App.globalData.is_pifa_selected = false
-          url = "/pages/index/index"
+            break;
+          default:
+            //App.globalData.is_pifa_selected = false
+            url = "/pages/index/index"
+        }
+      }
+      if (App.globalData.tab_bar_type == 'out') {
+        switch (active) {
+          case 0:
+            url = "/pages/date/index"
+            break;
+          case 1:
+            url = "/pages/history/index"
+            break;
+          case 2:
+            url = "/pages/user/index"
+            break;
+          default:
+            //App.globalData.is_pifa_selected = false
+            url = "/pages/index/index"
+        }
+      }
+      if (App.globalData.tab_bar_type == 'check') {
+        switch (active) {
+          case 0:
+            url = "/pages/check/index"
+            break;
+          case 1:
+            url = "/pages/checked/index"
+            break;
+          case 2:
+            url = "/pages/user/index"
+            break;
+          default:
+            //App.globalData.is_pifa_selected = false
+            url = "/pages/index/index"
+        }
       }
       wx.redirectTo({
         url: url

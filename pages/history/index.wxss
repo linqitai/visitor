@@ -1,28 +1,8 @@
 /* 搜索框组件 */
 /* @import "components/search/search.wxss"; */
-.title{
-  font-size: 32rpx;
-  font-weight: bold;
-  padding: 24rpx 20rpx 24rpx 15px;
-}
-.label{width: 90px !important;font-size: 32rpx;}
-.text{font-size: 32rpx;margin-left: 40px;}
-.wings_blank{
-  padding-left: 24rpx;
-  padding-right: 24rpx;
-}
-.scroll{
-  width: 100%;
-  height: 100%;
-}
+
 .form{
   width: 100%;
   height: auto;
-}
-.list{font-size: 30rpx;margin-bottom: 120rpx;}
-.list .item{
-  padding: 12rpx 24rpx;
-  background-color: white;
-  overflow: hidden;
-  margin-bottom: 8rpx;
+  font-size: 14px;
 }

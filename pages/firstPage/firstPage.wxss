@@ -11,16 +11,3 @@
   transform: translateX(-50%); */
   width: 480rpx; height: 188rpx;
 }
-.btn1{
-  margin-top: 100rpx;
-  width: 90%;
-}
-.btn2{
-  margin-top: 40rpx;
-  background-color: white !important;
-  width: 90%;
-}
-.btn3{
-  margin-top: 40rpx;
-  width: 90%;
-}

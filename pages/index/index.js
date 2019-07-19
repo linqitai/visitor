@@ -30,7 +30,9 @@ Page({
       Date:"",
       StartTime:"",
       EndTime: "",
-      Remark:""
+      Remark:"",
+      Checker:"",
+      SNo:""
     },
     sex_array: App.globalData.sex_array,
     reason_array: App.globalData.reason_array,
@@ -42,16 +44,59 @@ Page({
     // App._get("api/visitors/testLink",{},function(res){
     //   console.log('res',res)
     // })
+    console.log('App.globalData.userInfo',App.globalData.userInfo)
   },
   onLoad: function (options) {
     let _this = this;
+    console.log(App.globalData.tab_bar_type, "App.globalData.tab_bar_type")
     this.setData({
       active: 0,
-      tab_bar: App.globalData.tab_bar
+      tab_bar: App.getTab_bar(App.globalData.tab_bar_type)
     })
+    console.log('tab_bar',_this.data.tab_bar)
     this.setData({ 'form.Date': App.getDate(new Date().getTime()) })
-    this.setData({ 'form.StartTime': App.getHM(new Date().getTime()) })
+    this.setData({ 'form.StartTime': '08:00' })
     this.setData({ 'form.EndTime': "17:00" })
+  },
+  formSubmit(e) {
+    let _this = this;
+    console.log('form', e.detail.value)
+    _this.setData({
+      form: e.detail.value
+    });
+    _this.setData({
+      'form.Checker': App.globalData.userInfo.SName,
+      'form.SNo': App.globalData.userInfo.SNo
+    });
+    console.log('form', _this.data.form)
+    if (App.isNull(_this.data.form.Name)) {
+      App.showToast("访客姓名不可为空"); return;
+    }
+    if (App.isNull(_this.data.form.Phone)) {
+      App.showToast("手机号不可为空"); return;
+    }
+    if (App.isNull(_this.data.form.IdentityNumber)) {
+      App.showToast("证件号不可为空"); return;
+    }
+    App.showModel("提交后不得修改，您确定要提交此访客单吗？", function (e) {
+      console.log('e',e);
+      // 下面调用接口
+      App._post_form("api/visitors/add4In", _this.data.form, function (res) {
+        console.log("res", res)
+        let result = JSON.parse(res)
+        if (result.code == 1) {
+          App.showToast("数据提交成功");
+          setTimeout(function(){
+            wx.navigateTo({
+              url: '../history/index',
+            })
+          },1000)
+        } else {
+          console.log("msg", result.msg)
+          App.showToast(result.msg);
+        }
+      })
+    })
   },
   bindStartTimeChange: function (e) {
     console.log('picker发送选择改变，携带值为', e.detail.value);
@@ -90,40 +135,6 @@ Page({
     this.setData({
       'form.Number': e.detail.value
     });
-  },
-  formSubmit(e){
-    let _this = this;
-    console.log('form', e.detail.value)
-    _this.setData({
-      form: e.detail.value
-    });
-    console.log('form', _this.data.form)
-    if (App.isNull(_this.data.form.Name)) {
-      App.showToast("访客姓名不可为空");return;
-    }
-    if (App.isNull(_this.data.form.Phone)) {
-      App.showToast("手机号不可为空"); return;
-    }
-    if (App.isNull(_this.data.form.IdentityNumber)) {
-      App.showToast("证件号不可为空"); return;
-    }
-    App.showModel("提交后不得修改，您确定要提交此访客单吗？",function(){
-      console.log("确定");
-      // 下面调用接口
-      App._post_form("api/visitors/add",_this.data.form,function(res){
-        console.log("res",res)
-        let result = JSON.parse(res)
-        if(result.code==1){
-          App.showToast("数据提交成功");
-          wx.reLaunch({
-            url: '../history/index',
-          })
-        }else{
-          console.log("msg", result.msg)
-          App.showToast(result.msg);
-        }
-      })
-    })
   },
   to_shopcart_view(){
     wx.navigateTo({

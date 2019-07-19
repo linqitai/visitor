@@ -5,6 +5,10 @@
     "usingComponents": {
       "refresh-view": "/components/RefreshView/refresh-view",
       "tab-bar": "/components/TabBar/tabbar",
-      "van-field": "/dist/field/index"
+      "van-field": "/dist/field/index",
+      "van-action-sheet": "/dist/action-sheet/index",
+      "van-radio": "/dist/radio/index",
+      "van-radio-group": "/dist/radio-group/index",
+      "i-input": "/iView/input/index"
     }
 }

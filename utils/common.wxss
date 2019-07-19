@@ -152,6 +152,9 @@ page {
   -ms-flex-align: center;
   align-items: center;
 }
+.f-38 {
+  font-size: 38rpx;
+}
 
 .f-34 {
   font-size: 34rpx;

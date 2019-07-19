@@ -17,8 +17,10 @@ Page({
     windowWidth: '',
     windowHeight: '',
     maxlengthPhome: 11,
-    maxlengthIdentityNumber:18,
+    maxlengthIdentityNumber: 18,
+    SNo: "", //员工编号
     form:{
+      SName:"",
       Name: "",
       Sex: 0,
       Phone: "",
@@ -30,8 +32,14 @@ Page({
       Date:"",
       StartTime:"",
       EndTime: "",
-      Remark:""
+      Remark:"",
+      SMPhone:"",
+      SDDetailName:""
     },
+    show:false,
+    radio:'',
+    title:"请选择被访人",
+    visitorList:[],
     sex_array: App.globalData.sex_array,
     reason_array: App.globalData.reason_array,
     number_array: App.globalData.number_array
@@ -45,13 +53,123 @@ Page({
   },
   onLoad: function (options) {
     let _this = this;
-    this.setData({
+    console.log(App.globalData.tab_bar_type, "App.globalData.tab_bar_type")
+    _this.setData({
       active: 0,
-      tab_bar: App.globalData.tab_bar
+      tab_bar: App.getTab_bar(App.globalData.tab_bar_type)
     })
+    console.log('tab_bar', _this.data.tab_bar)
     this.setData({ 'form.Date': App.getDate(new Date().getTime()) })
-    this.setData({ 'form.StartTime': App.getHM(new Date().getTime()) })
+    this.setData({ 'form.StartTime': '08:00' })
     this.setData({ 'form.EndTime': "17:00" })
+  },
+  onClose() {
+    this.setData({ show: false });
+  },
+  onChange(e){
+    let _this = this;
+    console.log("e.detail", e.detail)
+    let index = e.detail;
+    let SNo = _this.data.visitorList[index].SNo;
+    let SMPhone = _this.data.visitorList[index].SMPhone;
+    let SDDetailName = _this.data.visitorList[index].SDDetailName;
+    console.log('SNo', SNo)
+    console.log('SMPhone', SMPhone)
+    console.log('SDDetailName', SDDetailName)
+    _this.setData({ 
+      show: false,
+      'SNo': SNo,
+      'form.SMPhone': SMPhone,
+      'form.SDDetailName': SDDetailName
+    })
+    console.log("form",_this.data.form)
+  },
+  getStaffInfoByPhone(e){
+    let _this = this;
+    console.log('e', e.detail.value)
+    let prams = {
+      SMPhone: e.detail.value
+    }
+    if (prams.SMPhone == "" || prams.SMPhone == null) {
+      App.showToast("被访人手机号不得为空");
+      return;
+    }
+    App._get("api/visitors/getStaffInfoByPhone", prams, function (res) {
+      let result = JSON.parse(res)
+      console.log("result", result)
+      if (result.code == 1) {
+        console.log("data", result.data)
+        _this.setData({
+          visitorList: result.data
+        })
+        if (result.count > 1) {
+          _this.setData({ show: true, title: "请确认被访人" })
+        } else if (result.count == 1) {
+          let index = 0;
+          let SNo = _this.data.visitorList[index].SNo;
+          let SName = _this.data.visitorList[index].SName;
+          let SMPhone = _this.data.visitorList[index].SMPhone;
+          let SDDetailName = _this.data.visitorList[index].SDDetailName;
+          console.log('SNo', SNo)
+          console.log('SMPhone', SMPhone)
+          console.log('SDDetailName', SDDetailName)
+          _this.setData({
+            'SNo': SNo,
+            'form.SName': SName,
+            'form.SMPhone': SMPhone,
+            'form.SDDetailName': SDDetailName
+          })
+        } else {
+          App.showToast("未查到此人，确认后请直接电话联系");
+        }
+      } else {
+        console.log("msg", result.msg)
+        App.showToast(result.msg);
+      }
+    })
+  },
+  getStaffInfoByName(e){
+    let _this = this;
+    console.log('e', e.detail.value)
+    let prams = {
+      SName: e.detail.value
+    }
+    if (prams.SName==""||prams.SName==null){
+      App.showToast("被访人姓名不得为空");
+      return;
+    }
+    App._get("api/visitors/getStaffInfoByName", prams, function (res) {
+      let result = JSON.parse(res)
+      console.log("result", result)
+      if (result.code == 1) {
+        console.log("data", result.data)
+        _this.setData({
+          visitorList: result.data
+        })
+        if(result.count>1){
+          _this.setData({ show: true })
+        }else if(result.count==1){
+          let index = 0;
+          let SNo = _this.data.visitorList[index].SNo;
+          let SMPhone = _this.data.visitorList[index].SMPhone;
+          let SDDetailName = _this.data.visitorList[index].SDDetailName;
+          console.log('SNo', SNo)
+          console.log('SDDetailName', SDDetailName)
+          _this.setData({
+            title: "请确认被访人",
+            show: false,
+            'SNo': SNo,
+            'form.SMPhone': SMPhone,
+            'form.SDDetailName': SDDetailName
+          })
+        }else{
+          App.showToast("未查到此人，确认后请直接电话联系");
+        }
+      } else {
+        console.log("msg", result.msg)
+        App.showToast(result.msg);
+      }
+    })
   },
   bindStartTimeChange: function (e) {
     console.log('picker发送选择改变，携带值为', e.detail.value);
@@ -93,11 +211,18 @@ Page({
   },
   formSubmit(e){
     let _this = this;
+    console.log('e', e)
     console.log('form', e.detail.value)
     _this.setData({
-      form: e.detail.value
+      form: e.detail.value,
+      'form.SNo':_this.data.SNo,
+      'form.OpenId': wx.getStorageSync('openid')
     });
+    console.log('getOpenId',wx.getStorageSync('openid'))
     console.log('form', _this.data.form)
+    if (App.isNull(_this.data.form.SName)) {
+      App.showToast("被访人姓名不可为空"); return;
+    }
     if (App.isNull(_this.data.form.Name)) {
       App.showToast("访客姓名不可为空");return;
     }
@@ -110,14 +235,16 @@ Page({
     App.showModel("提交后不得修改，您确定要提交此访客单吗？",function(){
       console.log("确定");
       // 下面调用接口
-      App._post_form("api/visitors/add",_this.data.form,function(res){
+      App._post_form("api/visitors/add4Out",_this.data.form,function(res){
         console.log("res",res)
         let result = JSON.parse(res)
         if(result.code==1){
           App.showToast("数据提交成功");
-          wx.reLaunch({
-            url: '../history/index',
-          })
+          setTimeout(function () {
+            wx.navigateTo({
+              url: '../history/index',
+            })
+          }, 1000)
         }else{
           console.log("msg", result.msg)
           App.showToast(result.msg);

@@ -1,5 +1,13 @@
 let App = getApp();
 
+var QRCode = require('../../utils/weapp-qrcode.js')
+import rpx2px from '../../utils/rpx2px.js'
+
+var qrcode;
+
+// 300rpx 在6s上为 150px
+const qrcodeWidth = rpx2px(500)
+
 Page({
   data: {
     // banner轮播组件属性
@@ -18,6 +26,8 @@ Page({
     windowHeight: '',
     maxlengthPhome: 11,
     maxlengthIdentityNumber:18,
+    Type:"",
+    Id:"",
     CreateTime: "",
     Name: "",
     Sex: "",
@@ -48,6 +58,7 @@ Page({
       EndTime: "",
       Remark:""
     },
+    qrcodeWidth: qrcodeWidth,
   },
   onShow: function () {
     // 刷新组件
@@ -61,8 +72,9 @@ Page({
     console.log('item.CreateTime', options.CreateTime);
     console.log('item.Name', options.Name);
     this.setData({
+      Type: App.globalData.tab_bar_type,
       active: 1,
-      tab_bar: App.globalData.tab_bar,
+      Id: options.Id,
       CreateTime: options.CreateTime,
       Name: options.Name,
       Sex: App.globalData.sex_array[options.Sex],
@@ -76,18 +88,116 @@ Page({
       Remark: options.Remark,
       InvitorName: options.InvitorName,
       InvitorDep: options.InvitorDep,
-      CheckStatus: options.CheckStatus == 0 ? "未审核" :"已审核",
+      CheckStatus: options.CheckStatus,
       Checker: options.Checker,
       CheckDate: options.CheckDate,
       Date: options.Date,
       StartTime: options.StartTime,
       EndTime: options.EndTime,
-      Remark: (options.Remark == 'null' || options.Remark == null) ? "--" : options.Remark
+      Remark: (options.Remark == 'null' || options.Remark == null) ? "--" : options.Remark,
+      SName: options.SName,
+      SDDetailName: options.SDDetailName,
+      EnterCode: options.EnterCode
     })
     console.log("data:",this.data)
     this.setData({ 'form.Date': App.getDate(new Date().getTime()) })
     this.setData({ 'form.StartTime': App.getHM(new Date().getTime()) })
     this.setData({ 'form.EndTime': "17:00" })
+
+    qrcode = new QRCode('canvas', {
+      usingIn: this,
+      // text: "https://github.com/tomfriwel/weapp-qrcode",
+      image: '/images/logo.png',
+      width: qrcodeWidth,
+      height: qrcodeWidth,
+      // width: 150,
+      // height: 150,
+      colorDark: "#1CA4FC",
+      colorLight: "white",
+      correctLevel: QRCode.CorrectLevel.H,
+    });
+
+    // 生成图片，绘制完成后调用回调
+    qrcode.makeCode(_this.data.EnterCode)
+  },
+  // 长按保存
+  save: function () {
+    console.log('save')
+    wx.showActionSheet({
+      itemList: ['保存图片'],
+      success: function (res) {
+        console.log(res.tapIndex)
+        if (res.tapIndex == 0) {
+          qrcode.exportImage(function (path) {
+            wx.saveImageToPhotosAlbum({
+              filePath: path
+            })
+          })
+        }
+      }
+    })
+  },
+  pass(){
+    let _this = this;
+    App.showModel("审核后不得修改，您决定好了吗？", function (e) {
+      console.log('e', e);
+      console.log('e', e.confirm);
+      if(e.confirm){
+        console.log("审核通过");
+        let prams = {
+          Id: _this.data.Id,
+          CheckStatus: "1",// 1通过，-1拒绝
+          Checker: App.globalData.userInfo.SName
+        }
+        console.log('prams', prams)
+        // 下面调用接口
+        App._post_form("api/visitors/check", prams, function (res) {
+          let result = JSON.parse(res)
+          console.log("result", result)
+          if (result.code == 1) {
+            App.showToast("操作成功");
+            setTimeout(function () {
+              wx.navigateTo({
+                url: "../checked/index"
+              });
+            }, 1000)
+          } else {
+            App.showToast("操作失败");
+          }
+        })
+      }
+    })
+  },
+  refuse(){
+    let _this = this;
+    App.showModel("审核后不得修改，您决定好了吗？", function (e) {
+      console.log('e', e);
+      console.log('e', e.confirm);
+      if (e.confirm) {
+        console.log("审核拒绝");
+        let prams = {
+          Id: _this.data.Id,
+          CheckStatus: "-1",// 1通过，-1拒绝
+          Checker: App.globalData.userInfo.SName
+        }
+        console.log('prams', prams)
+        // 下面调用接口
+        App._post_form("api/visitors/check", prams, function (res) {
+          let result = JSON.parse(res)
+          console.log("result", result)
+          if (result.code == 1) {
+            App.showToast("操作成功");
+            setTimeout(function () {
+              wx.navigateTo({
+                url: "../checked/index"
+              });
+            }, 1000)
+          } else {
+            App.showToast("操作失败");
+          }
+        })
+      }
+    })
   },
   nullToLine: function (value) {
     if (value == "" || value == null) {
@@ -131,40 +241,6 @@ Page({
     this.setData({
       'form.number': e.detail.value
     });
-  },
-  formSubmit(e){
-    let _this = this;
-    console.log('form', e.detail.value)
-    _this.setData({
-      form: e.detail.value
-    });
-    console.log('form', _this.data.form)
-    if (App.isNull(_this.data.form.Name)) {
-      App.showToast("访客姓名不可为空");return;
-    }
-    if (App.isNull(_this.data.form.Phone)) {
-      App.showToast("手机号不可为空"); return;
-    }
-    if (App.isNull(_this.data.form.IdentityNumber)) {
-      App.showToast("证件号不可为空"); return;
-    }
-    App.showModel("提交后不得修改，您确定要提交此访客单吗？",function(){
-      console.log("确定");
-      // 下面调用接口
-      App._post_form("api/visitors/add",_this.data.form,function(res){
-        console.log("res",res)
-        let result = JSON.parse(res)
-        if(result.code==1){
-          App.showToast("数据提交成功");
-          wx.reLaunch({
-            url: '../history/index',
-          })
-        }else{
-          console.log("msg", result.msg)
-          App.showToast(result.msg);
-        }
-      })
-    })
   },
   to_shopcart_view(){
     wx.navigateTo({

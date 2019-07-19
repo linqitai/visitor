@@ -1,7 +1,10 @@
 {
   "pages": [
     "pages/firstPage/firstPage",
+    "pages/updatePassword/index",
     "pages/date/index",
+    "pages/check/index",
+    "pages/checked/index",
     "pages/index/index",
     "pages/detail/index",
     "pages/history/index",

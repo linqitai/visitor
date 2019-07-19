@@ -28,35 +28,48 @@ Page({
     // 执行微信登录
     wx.login({
       success: function (res) {
+        console.log('res', res)
+        let prams = {
+          code: res.code,
+          user_info: e.detail.rawData,
+          encrypted_data: e.detail.encryptedData,
+          iv: e.detail.iv,
+          signature: e.detail.signature
+        }
+        console.log('prams',prams)
+        wx.hideLoading();
+        let p = JSON.parse(prams.user_info);
+        p.openid = App.globalData.openid;
+        console.log('p',p)
+        App._post_form('api/visitors/addWXUserInfo', p, function (res) {
+          console.log('res',res)
+          let result = JSON.parse(res)
+          if(result.code==1){
+            _this.navigateBack();
+          }else{
+            console.log('msg', result.msg)
+          }
+        });
+        // _this.navigateBack();
+          //openid: App.globalData.openid,
+          // "{"nickName":"天道酬勤","gender":1,"language":"zh_CN","city":"温州","province":"浙江","country":"中国","avatarUrl":"https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJ3u8Rnrggn2thYlMQEhtmibIVdia2DJ0s3K7qtUdqyLTXCOglInq04Uyg8tMiaRiaUxW0L497lwYS6Ew/132"}"
         // 发送用户信息
-        App._post_form('user/login'
-          , {
-            code: res.code,
-            user_info: e.detail.rawData,
-            encrypted_data: e.detail.encryptedData,
-            iv: e.detail.iv,
-            signature: e.detail.signature
-          }
-          , function (result) {
-            // 记录token user_id
-            wx.setStorageSync('token', result.data.token);
-            wx.setStorageSync('user_id', result.data.user_id);
-            App.getUserDetail()
-            // 跳转回原页面
-            console.log(wx.getStorageSync('currentPage').route,"currentPage");
-            let route = wx.getStorageSync('currentPage').route;
-            if (route == 'pages/index/index') {
-              wx.redirectTo({
-                url: '../index/index',
-              })
-            } else {
-              _this.navigateBack();
-            }
-          }
-          , false
-          , function () {
-            wx.hideLoading();
-          });
+        // App._post_form('user/login', prams, function (result) {
+        //     // 记录token user_id
+        //     wx.setStorageSync('token', result.data.token);
+        //     wx.setStorageSync('user_id', result.data.user_id);
+        //     // App.getUserDetail()
+        //     // 跳转回原页面
+        //     console.log(wx.getStorageSync('currentPage').route,"currentPage");
+        //     let route = wx.getStorageSync('currentPage').route;
+        //     if (route == 'pages/index/index') {
+        //       wx.redirectTo({
+        //         url: '../index/index',
+        //       })
+        //     } else {
+        //       _this.navigateBack();
+        //     }
+        // });
       }
     });
   },

@@ -6,7 +6,12 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    form:{
+      SMPhone:"",
+      SInitialPassword:""
+    },
+    username:'13958776325',
+    password:'888888'
   },
 
   /**
@@ -19,9 +24,40 @@ Page({
     //   }
     // )
   },
-  toIndex(){
-    wx.navigateTo({
-      url: '../index/index',
+  formSubmit(e){
+    let _this = this;
+    console.log('form', e.detail.value)
+    _this.setData({
+      form: e.detail.value
+    });
+    console.log('form', _this.data.form)
+    if (App.isNull(_this.data.form.SMPhone)) {
+      App.showToast("用户名不可为空"); return;
+    }
+    if (App.isNull(_this.data.form.SInitialPassword)) {
+      App.showToast("密码不可为空"); return;
+    }
+    App._get("api/visitors/login", _this.data.form, function (res) {
+      let result = JSON.parse(res)
+      console.log("result", result)
+      if (result.code == 1) {
+        App.showToast("登录成功");
+        App.globalData.userInfo=result.data[0];
+        setTimeout(function(){
+          if (App.globalData.tab_bar_type=='in'){
+            wx.navigateTo({
+              url: '../index/index',
+            })
+          } else if (App.globalData.tab_bar_type == 'check'){
+            wx.navigateTo({
+              url: '../check/index',
+            })
+          }
+        },1000)
+      } else {
+        console.log("msg", result.msg)
+        App.showToast(result.msg);
+      }
     })
   },
   navigateBack: function () {
