@@ -32,7 +32,8 @@ Page({
       EndTime: "",
       Remark:"",
       Checker:"",
-      SNo:""
+      SNo:"",
+      OpenId4In:""
     },
     sex_array: App.globalData.sex_array,
     reason_array: App.globalData.reason_array,
@@ -54,7 +55,7 @@ Page({
       tab_bar: App.getTab_bar(App.globalData.tab_bar_type)
     })
     console.log('tab_bar',_this.data.tab_bar)
-    this.setData({ 'form.Date': App.getDate(new Date().getTime()) })
+    this.setData({ 'form.Date': App.getDate(new Date().getTime() + 24 * 60 * 60 * 1000) })
     this.setData({ 'form.StartTime': '08:00' })
     this.setData({ 'form.EndTime': "17:00" })
   },
@@ -66,18 +67,19 @@ Page({
     });
     _this.setData({
       'form.Checker': App.globalData.userInfo.SName,
-      'form.SNo': App.globalData.userInfo.SNo
+      'form.SNo': App.globalData.userInfo.SNo,
+      'form.OpenId4In': App.globalData.openid
     });
     console.log('form', _this.data.form)
     if (App.isNull(_this.data.form.Name)) {
       App.showToast("访客姓名不可为空"); return;
     }
     if (App.isNull(_this.data.form.Phone)) {
-      App.showToast("手机号不可为空"); return;
+      App.showToast("联系电话不可为空"); return;
     }
-    if (App.isNull(_this.data.form.IdentityNumber)) {
-      App.showToast("证件号不可为空"); return;
-    }
+    // if (App.isNull(_this.data.form.IdentityNumber)) {
+    //   App.showToast("证件号不可为空"); return;
+    // }
     App.showModel("提交后不得修改，您确定要提交此访客单吗？", function (e) {
       console.log('e',e);
       // 下面调用接口
@@ -86,11 +88,17 @@ Page({
         let result = JSON.parse(res)
         if (result.code == 1) {
           App.showToast("数据提交成功");
+          //在这里发送微信服务消息通知访客
+          let openid = result.openid;
+          console.log('openid',openid)
+
           setTimeout(function(){
             wx.navigateTo({
               url: '../history/index',
             })
           },1000)
+        } else if(result.code == 101){
+          App.showModel(result.msg)
         } else {
           console.log("msg", result.msg)
           App.showToast(result.msg);

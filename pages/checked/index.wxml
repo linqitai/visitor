@@ -14,8 +14,12 @@
           <label class='label'>结束日期</label><text class='text'>{{form.EndDate}}</text>
         </view>
       </picker>
-    <view><van-field name="Name" label="访客姓名" placeholder="根据访客姓名搜索" clearable="{{ true }}" border="{{ false }}"/></view>
-      <view><van-field name="Phone" label="访客手机号" placeholder="根据访客手机号搜索" clearable="{{ true }}" border="{{ false }}"/></view>
+    <view>
+      <van-field name="Name" label="访客姓名" placeholder="根据访客姓名搜索" clearable="{{ true }}" border="{{ false }}"/>
+    </view>
+    <view>
+      <van-field name="Phone" label="访客手机号" placeholder="根据访客手机号搜索" clearable="{{ true }}" border="{{ false }}"/>
+    </view>
     </van-cell-group>
     <view class='wings_blank mt-20'>
       <button class='submit' type="primary" formType="submit" size='default'> 查 询 </button>

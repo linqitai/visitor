@@ -6,6 +6,13 @@ App({
   globalData: {
     user_id: null,
     userInfo:{},
+    access_token: "",
+    appid: "wx9582ea0575cc85be",
+    secret: "384a72d1d9f91528bb87792eff567f7a",
+    openid:"",
+    OpenId4In:"",//在firstPage页面已经获得
+    OpenId4Out: "",//在firstPage页面已经获得
+    formId:"",
     cart1:0,
     cart2:0,
     is_pifa_selected:false,

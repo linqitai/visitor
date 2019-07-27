@@ -7,12 +7,9 @@ Page({
    */
   data: {
     form:{
-      SMPhone:"",
-      SInitialPassword:"",
+      Phone:"",
       OpenId:""
-    },
-    username:'13958776325',
-    password:'888888'
+    }
   },
 
   /**
@@ -33,14 +30,11 @@ Page({
     });
     console.log('App.globalData.openid', App.globalData.openid)
     _this.setData({
-      'form.OpenId4In': App.globalData.openid
+      'form.OpenId': App.globalData.openid
     })
     console.log('form', _this.data.form)
-    if (App.isNull(_this.data.form.SMPhone)) {
-      App.showToast("用户名不可为空"); return;
-    }
-    if (App.isNull(_this.data.form.SInitialPassword)) {
-      App.showToast("密码不可为空"); return;
+    if (App.isNull(_this.data.form.Phone)) {
+      App.showToast("手机号不可为空"); return;
     }
     App._get("api/visitors/login", _this.data.form, function (res) {
       let result = JSON.parse(res)

@@ -16,6 +16,7 @@
       <van-field label="预约时间" value="{{ Date }} {{ StartTime }}~{{ EndTime }}" placeholder="--" disabled border="{{ false }}"/>
       <van-field label="备注" value="{{ Remark }}" placeholder="--" disabled border="{{ false }}"/>
       <van-field label="被访人姓名" value="{{ SName }}" placeholder="--" disabled border="{{ false }}"/>
+      <van-field label="被访人手机号" value="{{ SMPhone }}" placeholder="--" disabled border="{{ false }}"/>
       <van-field label="被访人部门" value="{{ SDDetailName }}" placeholder="--" disabled border="{{ false }}"/>
       <van-field label="审核结果" value="{{ CheckStatus=='0'?'未审核':CheckStatus=='1'?'审核通过':'审核拒绝' }}" placeholder="--" disabled border="{{ false }}"/>
       <van-field label="审核人" value="{{ Checker }}" placeholder="--" disabled border="{{ false }}"/>
@@ -28,8 +29,12 @@
       <view class='pd_b40 wings_blank'>到甲方单位的时候请提供此二维码或者报此数字邀约码进行确认(记得带身份证哦)</view>
     </view>
     <view wx:if="{{CheckStatus == '0' && Type == 'check'}}">
-      <button class='btn color_white' type="primary" bindtap="pass"> 审核通过 </button>
-      <button class='btn color_white mb-40' type="warn" bindtap="refuse"> 审核拒绝 </button>
+    <form bindsubmit="passSubmit" report-submit="true">
+      <button class='btn color_white' formType="submit" type="primary"> 审核通过 </button>
+    </form>
+    <form bindsubmit="refuseSubmit" report-submit="true">
+      <button class='btn color_white mb-40' formType="submit" type="warn"> 审核拒绝 </button>
+    </form>
     </view>
   </view>
 </scroll-view>

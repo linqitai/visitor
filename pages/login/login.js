@@ -6,7 +6,8 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    Phone: "",
+    maxlengthPhone:11
   },
 
   /**
@@ -15,7 +16,13 @@ Page({
   onLoad: function (options) {
 
   },
-
+  getPhoneInput(e){
+    console.log("e",e.detail)
+    let _this = this;
+    _this.setData({
+      Phone: e.detail
+    })
+  },
   /**
    * 授权登录
    */
@@ -24,6 +31,19 @@ Page({
     if (e.detail.errMsg !== 'getUserInfo:ok') {
       return false;
     }
+    console.log('_this.data.Phone', _this.data.Phone)
+    if (!(/^1[34578]\d{9}$/.test(_this.data.Phone))) {
+      wx.showToast({
+        title: '请先填写正确的手机号',
+        duration: 2000,
+        icon: 'none'
+      });
+      return;
+    }
+    // if (App.isNull(_this.data.Phone)){
+    //   App.showToast("请先填写正确的手机号")
+    //   return;
+    // }
     wx.showLoading({ title: "正在登录", mask: true });
     // 执行微信登录
     wx.login({
@@ -39,7 +59,8 @@ Page({
         console.log('prams',prams)
         wx.hideLoading();
         let p = JSON.parse(prams.user_info);
-        p.openid = App.globalData.openid;
+        p.OpenId = App.globalData.openid;
+        p.Phone = _this.data.Phone;
         console.log('p',p)
         App._post_form('api/visitors/addWXUserInfo', p, function (res) {
           console.log('res',res)
@@ -48,28 +69,9 @@ Page({
             _this.navigateBack();
           }else{
             console.log('msg', result.msg)
+            App.showToast(result.msg)
           }
         });
-        // _this.navigateBack();
-          //openid: App.globalData.openid,
-          // "{"nickName":"天道酬勤","gender":1,"language":"zh_CN","city":"温州","province":"浙江","country":"中国","avatarUrl":"https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJ3u8Rnrggn2thYlMQEhtmibIVdia2DJ0s3K7qtUdqyLTXCOglInq04Uyg8tMiaRiaUxW0L497lwYS6Ew/132"}"
-        // 发送用户信息
-        // App._post_form('user/login', prams, function (result) {
-        //     // 记录token user_id
-        //     wx.setStorageSync('token', result.data.token);
-        //     wx.setStorageSync('user_id', result.data.user_id);
-        //     // App.getUserDetail()
-        //     // 跳转回原页面
-        //     console.log(wx.getStorageSync('currentPage').route,"currentPage");
-        //     let route = wx.getStorageSync('currentPage').route;
-        //     if (route == 'pages/index/index') {
-        //       wx.redirectTo({
-        //         url: '../index/index',
-        //       })
-        //     } else {
-        //       _this.navigateBack();
-        //     }
-        // });
       }
     });
   },

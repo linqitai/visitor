@@ -50,6 +50,24 @@ Page({
     // App._get("api/visitors/testLink",{},function(res){
     //   console.log('res',res)
     // })
+    if (App.globalData.access_token == "") {
+      let d = {
+        appid: App.globalData.appid,
+        secret: App.globalData.secret,
+        grant_type: "client_credential"
+      }
+      let url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + d.appid + "&secret=" + d.secret;
+      wx.request({
+        url: url,
+        data: {},
+        method: 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT  
+        // header: {}, // 设置请求的 header  
+        success: function (res) {
+          console.log('res', res)
+          App.globalData.access_token = res.data.access_token;
+        }
+      });
+    }
   },
   onLoad: function (options) {
     let _this = this;
@@ -59,7 +77,7 @@ Page({
       tab_bar: App.getTab_bar(App.globalData.tab_bar_type)
     })
     console.log('tab_bar', _this.data.tab_bar)
-    this.setData({ 'form.Date': App.getDate(new Date().getTime()) })
+    this.setData({ 'form.Date': App.getDate(new Date().getTime() + 24 * 60 * 60 * 1000) })
     this.setData({ 'form.StartTime': '08:00' })
     this.setData({ 'form.EndTime': "17:00" })
   },
@@ -110,9 +128,11 @@ Page({
           let SName = _this.data.visitorList[index].SName;
           let SMPhone = _this.data.visitorList[index].SMPhone;
           let SDDetailName = _this.data.visitorList[index].SDDetailName;
+          App.globalData.OpenId4In = _this.data.visitorList[index].OpenId4In;
           console.log('SNo', SNo)
           console.log('SMPhone', SMPhone)
           console.log('SDDetailName', SDDetailName)
+          console.log('App.globalData.OpenId4In', App.globalData.OpenId4In)
           _this.setData({
             'SNo': SNo,
             'form.SName': SName,
@@ -134,10 +154,10 @@ Page({
     let prams = {
       SName: e.detail.value
     }
-    if (prams.SName==""||prams.SName==null){
-      App.showToast("被访人姓名不得为空");
-      return;
-    }
+    // if (prams.SName==""||prams.SName==null){
+    //   App.showToast("被访人姓名不得为空");
+    //   return;
+    // }
     App._get("api/visitors/getStaffInfoByName", prams, function (res) {
       let result = JSON.parse(res)
       console.log("result", result)
@@ -153,6 +173,7 @@ Page({
           let SNo = _this.data.visitorList[index].SNo;
           let SMPhone = _this.data.visitorList[index].SMPhone;
           let SDDetailName = _this.data.visitorList[index].SDDetailName;
+          App.globalData.OpenId4In = _this.data.visitorList[index].OpenId4In;
           console.log('SNo', SNo)
           console.log('SDDetailName', SDDetailName)
           _this.setData({
@@ -168,6 +189,85 @@ Page({
       } else {
         console.log("msg", result.msg)
         App.showToast(result.msg);
+      }
+    })
+  },
+  formSubmit(e) {
+    let _this = this;
+    console.log('e', e)
+    console.log('form', e.detail.value)
+    _this.setData({
+      form: e.detail.value,
+      'form.SNo': _this.data.SNo,
+      'form.OpenId4Out': wx.getStorageSync('openid'),
+      'form.OpenId4In': App.globalData.OpenId4In
+    });
+    console.log('getOpenId', wx.getStorageSync('openid'))
+    console.log('form', _this.data.form)
+    if (App.isNull(_this.data.form.SName)) {
+      App.showToast("被访人姓名不可为空"); return;
+    }
+    if (App.isNull(_this.data.form.Name)) {
+      App.showToast("访客姓名不可为空"); return;
+    }
+    if (App.isNull(_this.data.form.Phone)) {
+      App.showToast("手机号不可为空"); return;
+    }
+    if (App.isNull(_this.data.form.IdentityNumber)) {
+      App.showToast("证件号不可为空"); return;
+    }
+    App.showModel("提交后不得修改，您确定要提交此访客单吗？", function () {
+      console.log("确定");
+      // 下面调用接口
+      App._post_form("api/visitors/add4Out", _this.data.form, function (res) {
+        console.log("res", res)
+        let result = JSON.parse(res)
+        if (result.code == 1) {
+          App.showToast("数据提交成功");
+          setTimeout(function () {
+            wx.navigateTo({
+              url: '../history/index',
+            })
+          }, 1000)
+        } else {
+          console.log("msg", result.msg)
+          App.showToast(result.msg);
+        }
+      })
+      if (App.globalData.OpenId4In != "") {
+        App.globalData.formId = e.detail.formId;
+        let _access_token = App.globalData.access_token;
+        let url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + _access_token;
+        let _jsonData = {
+          access_token: _access_token,
+          touser: App.globalData.OpenId4In,
+          template_id: 'KDwFmfR9VfOHl2ARYLEEsuc32WMm2vcAPwAveCXiWQY',//来访申请提醒模板
+          form_id: e.detail.formId,
+          page: "pages/firstPage/firstPage",
+          data: {
+            "keyword1": { "value": _this.data.form.Name, "color": "#173177" },
+            "keyword2": { "value": _this.data.form.Phone, "color": "#173177" },
+            "keyword3": { "value": _this.data.form.Date + " " + _this.data.form.StartTime, "color": "#173177" },
+            "keyword4": { "value": _this.data.form.Reason + " " + _this.data.form.Remark, "color": "#173177" },
+          }
+        }
+        console.log('_jsonData', _jsonData)
+        wx.request({
+          url: url,
+          data: _jsonData,
+          method: 'POST',
+          success: function (res) {
+            console.log('消息发送成功', res)
+          },
+          fail: function (err) {
+            console.log('request fail ', err);
+          },
+          complete: function (res) {
+            console.log("request completed!", res);
+          }
+        })
+      } else {
+        App.showError("被访人未用过此访客小程序，请电话联系对方登录此系统并审核确认");
       }
     })
   },
@@ -208,49 +308,6 @@ Page({
     this.setData({
       'form.Number': e.detail.value
     });
-  },
-  formSubmit(e){
-    let _this = this;
-    console.log('e', e)
-    console.log('form', e.detail.value)
-    _this.setData({
-      form: e.detail.value,
-      'form.SNo':_this.data.SNo,
-      'form.OpenId': wx.getStorageSync('openid')
-    });
-    console.log('getOpenId',wx.getStorageSync('openid'))
-    console.log('form', _this.data.form)
-    if (App.isNull(_this.data.form.SName)) {
-      App.showToast("被访人姓名不可为空"); return;
-    }
-    if (App.isNull(_this.data.form.Name)) {
-      App.showToast("访客姓名不可为空");return;
-    }
-    if (App.isNull(_this.data.form.Phone)) {
-      App.showToast("手机号不可为空"); return;
-    }
-    if (App.isNull(_this.data.form.IdentityNumber)) {
-      App.showToast("证件号不可为空"); return;
-    }
-    App.showModel("提交后不得修改，您确定要提交此访客单吗？",function(){
-      console.log("确定");
-      // 下面调用接口
-      App._post_form("api/visitors/add4Out",_this.data.form,function(res){
-        console.log("res",res)
-        let result = JSON.parse(res)
-        if(result.code==1){
-          App.showToast("数据提交成功");
-          setTimeout(function () {
-            wx.navigateTo({
-              url: '../history/index',
-            })
-          }, 1000)
-        }else{
-          console.log("msg", result.msg)
-          App.showToast(result.msg);
-        }
-      })
-    })
   },
   to_shopcart_view(){
     wx.navigateTo({

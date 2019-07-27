@@ -44,6 +44,7 @@
 .picker {
   padding: 4px 14px;
   background-color: #fff;
+  font-size: 14px;
 }
 .picker .label{width: 90px !important;}
 .picker .text{margin-left: 32px;}
@@ -52,6 +53,13 @@
   height: 100%;
   font-size: 14px;
 }
+.img{
+  margin-top: 100rpx;
+  width: 241px; height: 94px;
+}
+
+.form{font-size: 14px;}
+.list{margin-bottom: 120rpx;}
 .title{
   font-size: 15px;
   font-weight: bold;
@@ -83,8 +91,8 @@
 .color_black{color: #323232 !important;}
 .color_white{color: #ffffff !important;}
 .wings_blank{
-  padding-left: 24rpx;
-  padding-right: 24rpx;
+  padding-left: 5%;
+  padding-right: 5%;
 }
 
 .common-header-xian {

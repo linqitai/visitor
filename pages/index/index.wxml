@@ -5,14 +5,14 @@
     <form bindsubmit="formSubmit">
       <view class='title'>访客信息</view>
       <van-cell-group>
-        <van-field name="Name" label="访客姓名" placeholder="请输入您的姓名" border="{{ false }}"/>
+        <van-field name="Name" label="访客姓名" placeholder="请输入访客姓名" border="{{ false }}"/>
         <picker name="Sex" value="{{form.Sex}}" range="{{sex_array}}" bindchange="bindSexPickerChange">
           <view class="picker">
             <label class='label'>访客性别</label><text class='text'>{{sex_array[form.Sex]}}</text>
           </view>
         </picker>
-        <van-field name="Phone" label="联系电话" placeholder="请输入您的手机号" border="{{ false }}" maxlength="{{maxlengthPhome}}"/>
-        <van-field name="IdentityNumber" label="身份证号" placeholder="请输入您的身份证号" border="{{ false }}" maxlength="{{maxlengthIdentityNumber}}"/>
+        <van-field name="Phone" label="联系电话" placeholder="请输入访客手机号" border="{{ false }}" maxlength="{{maxlengthPhome}}"/>
+        <van-field name="IdentityNumber" label="身份证号" placeholder="请输入访客身份证号" border="{{ false }}" maxlength="{{maxlengthIdentityNumber}}"/>
         <picker name="Reason" value="{{form.Reason}}" range="{{reason_array}}" bindchange='bindReasonPickerChange'>
           <view class="picker">
             <label class='label'>访客事由</label><text class='text'>{{reason_array[form.Reason]}}</text>
@@ -23,8 +23,8 @@
             <label class='label'>访客人数</label><text class='text'>{{number_array[form.Number]}}</text>
           </view>
         </picker>
-        <van-field name="PlateNumber" label="访客车牌" placeholder="请输入您的车牌号" border="{{ false }}"/>
-        <van-field name="Unit" label="来访单位" placeholder="请输入您的单位" border="{{ false }}"/>
+        <van-field name="PlateNumber" label="访客车牌" placeholder="请输入访客车牌号" border="{{ false }}"/>
+        <van-field name="Unit" label="来访单位" placeholder="请输入访客单位" border="{{ false }}"/>
         <picker name="Date" mode="date" value="{{form.Date}}" start="2019-07-01" end="2027-07-01" bindchange="bindDateChange">
           <view class="picker">
             <label class='label'>来访日期</label><text class='text'>{{form.Date}}</text>

@@ -44,6 +44,7 @@ Page({
     CheckStatus: "",
     Checker: "",
     CheckDate: "",
+    EnterCode: "",
     form:{
       Name: "",
       Sex: 0,
@@ -96,13 +97,14 @@ Page({
       EndTime: options.EndTime,
       Remark: (options.Remark == 'null' || options.Remark == null) ? "--" : options.Remark,
       SName: options.SName,
+      SMPhone: (options.SMPhone == 'null' || options.SMPhone == null) ? "--" : options.SMPhone,
       SDDetailName: options.SDDetailName,
-      EnterCode: options.EnterCode
+      EnterCode: (options.EnterCode == 'null' || options.EnterCode == null) ? "--" : options.EnterCode
     })
     console.log("data:",this.data)
-    this.setData({ 'form.Date': App.getDate(new Date().getTime()) })
-    this.setData({ 'form.StartTime': App.getHM(new Date().getTime()) })
-    this.setData({ 'form.EndTime': "17:00" })
+    // this.setData({ 'form.Date': App.getDate(new Date().getTime()) })
+    // this.setData({ 'form.StartTime': App.getHM(new Date().getTime()) })
+    // this.setData({ 'form.EndTime': "17:00" })
 
     qrcode = new QRCode('canvas', {
       usingIn: this,
@@ -119,6 +121,27 @@ Page({
 
     // 生成图片，绘制完成后调用回调
     qrcode.makeCode(_this.data.EnterCode)
+    if (_this.data.CheckStatus=='0'&&_this.data.Type=='check'){
+      if (App.globalData.access_token==""){
+        let d = {
+          appid: App.globalData.appid,
+          secret: App.globalData.secret,
+          grant_type: "client_credential"
+        }
+        let url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + d.appid + "&secret=" + d.secret;
+        wx.request({
+          url: url,
+          data: {},
+          method: 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT  
+          // header: {}, // 设置请求的 header  
+          success: function (res) {
+            console.log('res', res)
+            App.globalData.access_token = res.data.access_token;
+          }
+        });
+      }
+      
+    }
   },
   // 长按保存
   save: function () {
@@ -137,38 +160,71 @@ Page({
       }
     })
   },
-  pass(){
+
+  passSubmit(e){
     let _this = this;
-    App.showModel("审核后不得修改，您决定好了吗？", function (e) {
-      console.log('e', e);
-      console.log('e', e.confirm);
-      if(e.confirm){
-        console.log("审核通过");
-        let prams = {
-          Id: _this.data.Id,
-          CheckStatus: "1",// 1通过，-1拒绝
-          Checker: App.globalData.userInfo.SName
+    console.log('e', e);
+    App.globalData.formId = e.detail.formId;
+    let _access_token = App.globalData.access_token;
+    let url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + _access_token;
+    let _jsonData = {
+        access_token: _access_token,
+        touser: App.globalData.openid,
+        template_id: '-1RkZaEQZ2YKukTI6wQ3Q9H0_M9Azp5-Nhy9hdWfMhQ',
+        form_id: e.detail.formId,
+        page: "pages/index/index",
+        data: {
+          "keyword1": { "value": "测试数据一", "color": "#173177" },
+          "keyword2": { "value": "测试数据二", "color": "#173177" },
+          "keyword3": { "value": "测试数据三", "color": "#173177" },
+          "keyword4": { "value": "测试数据四", "color": "#173177" },
         }
-        console.log('prams', prams)
-        // 下面调用接口
-        App._post_form("api/visitors/check", prams, function (res) {
-          let result = JSON.parse(res)
-          console.log("result", result)
-          if (result.code == 1) {
-            App.showToast("操作成功");
-            setTimeout(function () {
-              wx.navigateTo({
-                url: "../checked/index"
-              });
-            }, 1000)
-          } else {
-            App.showToast("操作失败");
-          }
-        })
+      }
+    wx.request({
+      url: url,
+      data: _jsonData,
+      method: method,
+      success: function (res) {
+        console.log(res)
+      },
+      fail: function (err) {
+        console.log('request fail ', err);
+      },
+      complete: function (res) {
+        console.log("request completed!");
       }
     })
+
+    // App.showModel("审核后不得修改，您决定好了吗？", function (e) {
+    //   console.log('e', e);
+    //   console.log('e', e.confirm);
+    //   if(e.confirm){
+    //     console.log("审核通过");
+    //     let prams = {
+    //       Id: _this.data.Id,
+    //       CheckStatus: "1",// 1通过，-1拒绝
+    //       Checker: App.globalData.userInfo.SName
+    //     }
+    //     console.log('prams', prams)
+    //     // 下面调用接口
+    //     App._post_form("api/visitors/check", prams, function (res) {
+    //       let result = JSON.parse(res)
+    //       console.log("result", result)
+    //       if (result.code == 1) {
+    //         App.showToast("操作成功");
+    //         setTimeout(function () {
+    //           wx.navigateTo({
+    //             url: "../checked/index"
+    //           });
+    //         }, 1000)
+    //       } else {
+    //         App.showToast("操作失败");
+    //       }
+    //     })
+    //   }
+    // })
   },
-  refuse(){
+  refuseSubmit(){
     let _this = this;
     App.showModel("审核后不得修改，您决定好了吗？", function (e) {
       console.log('e', e);

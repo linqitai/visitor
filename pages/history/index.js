@@ -21,7 +21,7 @@ Page({
     form:{
       StartDate:"",
       EndDate: "",
-      OpenId:""
+      OpenId4In:""
     },
     type: '',
     count:0,
@@ -73,31 +73,27 @@ Page({
       form: e.detail.value
     });
     console.log('App.globalData.tab_bar_type', App.globalData.tab_bar_type)
-    _this.setData({
-      'form.OpenId':wx.getStorageSync('openid')
-    });
-    // if (App.globalData.tab_bar_type=='out'){
-    //   console.log('_this.data.form.Phone',_this.data.form.Phone)
-    //   if (_this.data.form.Phone == 'null' || _this.data.form.Phone == '' || _this.data.form.Phone == null){
-    //     App.showToast('请输入您的手机号');
-    //     return;
-    //   }
-    // }
-    // if (App.globalData.tab_bar_type == 'in'){
-    //   console.log('App.globalData.userInfo.SMPhone', App.globalData.userInfo.SMPhone)
-    //   _this.setData({
-    //     'form.Phone': App.globalData.userInfo.SMPhone
-    //   });
-    // }
+    
     console.log('form', _this.data.form)
-    let url = "api/visitors/getListByTimeAndOpenId"
+    let url = "";
+    if (App.globalData.tab_bar_type=="in"){
+      url = "api/visitors/getListByTimeAndOpenId4In"
+      _this.setData({
+        'form.OpenId4In': wx.getStorageSync('openid')
+      });
+    }else{
+      url = "api/visitors/getListByTimeAndOpenId4Out"
+      _this.setData({
+        'form.OpenId4Out': wx.getStorageSync('openid')
+      });
+    }
     // if (_this.data.form.Phone == "" || _this.data.form.Phone == null){
     //   url ="api/visitors/getListByTime";
     // }else{
     //   url = "api/visitors/getListByTimeAndOpenId"
     // }
     App._post_form(url, _this.data.form, function (res) {
-      //console.log("res", res)
+      // console.log("res", res)
       let result = JSON.parse(res)
       if (result.code == 1) {
         //console.log("data", result.data)

@@ -2,7 +2,12 @@ page {
   background: #fff;
   font-size: 32rpx;
 }
-
+.welcome{
+  font-size: 50rpx;
+  text-align: center;
+  font-weight: blod;
+  color: #0d8a0b;
+}
 .container {
   padding: 0 60rpx;
 }
