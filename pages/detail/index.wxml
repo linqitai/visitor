@@ -18,7 +18,8 @@
       <van-field label="被访人姓名" value="{{ SName }}" placeholder="--" disabled border="{{ false }}"/>
       <van-field label="被访人手机号" value="{{ SMPhone }}" placeholder="--" disabled border="{{ false }}"/>
       <van-field label="被访人部门" value="{{ SDDetailName }}" placeholder="--" disabled border="{{ false }}"/>
-      <van-field label="审核结果" value="{{ CheckStatus=='0'?'未审核':CheckStatus=='1'?'审核通过':'审核拒绝' }}" placeholder="--" disabled border="{{ false }}"/>
+      <van-field label="审核结果" value="{{ CheckStatus=='0'?'未审核':CheckStatus=='1'?'审核通过':'审核拒绝' }} {{ RefuseReason }}" placeholder="--" type="textarea" autosize disabled border="{{ false }}"/>
+     
       <van-field label="审核人" value="{{ Checker }}" placeholder="--" disabled border="{{ false }}"/>
       <van-field label="审核日期" value="{{ CheckDate }}" placeholder="--" disabled border="{{ false }}"/>
 
@@ -32,6 +33,20 @@
     <form bindsubmit="passSubmit" report-submit="true">
       <button class='btn color_white' formType="submit" type="primary"> 审核通过 </button>
     </form>
+    <van-dialog
+      class="zindex"
+      use-slot
+      title="拒绝理由"
+      show="{{ show }}"
+      show-cancel-button
+      confirm-button-open-type="getUserInfo"
+      bind:close="onClose"
+      bind:getuserinfo="getUserInfo"
+    >
+      <view class='sureBox'>
+        <van-field label="拒绝理由" value="{{ RefuseReason }}" placeholder="请给对方一个拒绝的理由" border="{{ false }}" autosize bindinput="resuseReasonInput"/>
+      </view>
+    </van-dialog>
     <form bindsubmit="refuseSubmit" report-submit="true">
       <button class='btn color_white mb-40' formType="submit" type="warn"> 审核拒绝 </button>
     </form>

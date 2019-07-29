@@ -45,6 +45,7 @@ Page({
     Checker: "",
     CheckDate: "",
     EnterCode: "",
+    RefuseReason: "",
     form:{
       Name: "",
       Sex: 0,
@@ -60,6 +61,7 @@ Page({
       Remark:""
     },
     qrcodeWidth: qrcodeWidth,
+    show: false
   },
   onShow: function () {
     // 刷新组件
@@ -99,7 +101,10 @@ Page({
       SName: options.SName,
       SMPhone: (options.SMPhone == 'null' || options.SMPhone == null) ? "--" : options.SMPhone,
       SDDetailName: options.SDDetailName,
-      EnterCode: (options.EnterCode == 'null' || options.EnterCode == null) ? "--" : options.EnterCode
+      EnterCode: (options.EnterCode == 'null' || options.EnterCode == null) ? "--" : options.EnterCode,
+      OpenId4In: options.OpenId4In,
+      OpenId4Out: options.OpenId4Out,
+      RefuseReason: options.RefuseReason
     })
     console.log("data:",this.data)
     // this.setData({ 'form.Date': App.getDate(new Date().getTime()) })
@@ -143,6 +148,146 @@ Page({
       
     }
   },
+  passSubmit(e) {
+    let _this = this;
+    App.globalData.formId = e.detail.formId;
+    App.showModel("审核后不得修改，您决定好了吗？", function (e) {
+      console.log('e', e);
+      console.log('e', e.confirm);
+      if(e.confirm){
+        console.log("审核通过");
+        let prams = {
+          Id: _this.data.Id,
+          CheckStatus: "1",// 1通过，-1拒绝
+          Checker: App.globalData.userInfo.SName
+        }
+        console.log('prams', prams)
+        // 下面调用接口
+        App._post_form("api/visitors/check", prams, function (res) {
+          let result = JSON.parse(res)
+          console.log("result", result)
+          if (result.code == 1) {
+            let _access_token = App.globalData.access_token;
+            let url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + _access_token;
+            let _jsonData = {
+              access_token: _access_token,
+              touser: _this.data.OpenId4Out,
+              template_id: 'WXeoh4UHmcuX1RyC2szpW1fzAoGtV3_pbueJ6HB2G-I',
+              form_id: App.globalData.formId,
+              page: "pages/index/index",
+              data: {
+                "keyword1": { "value": _this.data.Name, "color": "#173177" },
+                "keyword2": { "value": _this.data.CreateTime, "color": "#173177" },
+                "keyword3": { "value": App.getDateTime(new Date().getTime()), "color": "#173177" },
+                "keyword4": { "value": _this.data.SName, "color": "#173177" },
+                "keyword5": { "value": "审核通过", "color": "#173177" },
+                "keyword6": { "value": "无", "color": "#173177" },
+              }
+            }
+            console.log('_jsonData', _jsonData)
+            wx.request({
+              url: url,
+              data: _jsonData,
+              method: "POST",
+              success: function (res) {
+                console.log('消息发送成功', res.errMsg)
+                if (res.errMsg == 'request:ok'){
+                  App.showToast("操作成功");
+                  setTimeout(function () {
+                    wx.navigateTo({
+                      url: "../checked/index"
+                    });
+                  }, 1000)
+                }
+              },
+              fail: function (err) {
+                console.log('request fail ', err);
+              },
+              complete: function (res) {
+                console.log("request completed!");
+              }
+            })
+          } else {
+            App.showToast("操作失败");
+          }
+        })
+      }
+    })
+  },
+  resuseReasonInput(e){
+    console.log(e.detail)
+    this.setData({ RefuseReason:e.detail })
+  },
+  getUserInfo(event) {
+    let _this = this;
+    console.log('getUserInfo',event.detail);
+    console.log('RefuseReason', _this.data.RefuseReason)
+    console.log("refuseSubmit");
+    let prams = {
+      Id: _this.data.Id,
+      CheckStatus: "-1",// 1通过，-1拒绝
+      Checker: App.globalData.userInfo.SName,
+      RefuseReason: _this.data.RefuseReason
+    }
+    console.log('prams', prams)
+    // 下面调用接口
+    App._post_form("api/visitors/check", prams, function (res) {
+      let result = JSON.parse(res)
+      console.log("result", result)
+      if (result.code == 1) {
+        let _access_token = App.globalData.access_token;
+        let url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + _access_token;
+        let _jsonData = {
+          access_token: _access_token,
+          touser: _this.data.OpenId4Out,
+          template_id: 'WXeoh4UHmcuX1RyC2szpW1fzAoGtV3_pbueJ6HB2G-I',
+          form_id: App.globalData.formId,
+          page: "pages/index/index",
+          data: {
+            "keyword1": { "value": _this.data.Name, "color": "#173177" },
+            "keyword2": { "value": _this.data.CreateTime, "color": "#173177" },
+            "keyword3": { "value": App.getDateTime(new Date().getTime()), "color": "#173177" },
+            "keyword4": { "value": _this.data.SName, "color": "#173177" },
+            "keyword5": { "value": "审核拒绝", "color": "#173177" },
+            "keyword6": { "value": _this.data.RefuseReason, "color": "#173177" },
+          }
+        }
+        console.log('_jsonData', _jsonData)
+        wx.request({
+          url: url,
+          data: _jsonData,
+          method: "POST",
+          success: function (res) {
+            console.log('消息发送成功', res.errMsg)
+            if (res.errMsg == 'request:ok') {
+              App.showToast("操作成功");
+              setTimeout(function () {
+                wx.navigateTo({
+                  url: "../checked/index"
+                });
+              }, 1000)
+            }
+          },
+          fail: function (err) {
+            console.log('request fail ', err);
+          },
+          complete: function (res) {
+            console.log("request completed!");
+          }
+        })
+      } else {
+        App.showToast("操作失败");
+      }
+    })
+  },
+  onClose() {
+    this.setData({ close: false });
+  },
+  refuseSubmit(e) {
+    let _this = this;
+    App.globalData.formId = e.detail.formId;
+    _this.setData({show:true})
+  },
   // 长按保存
   save: function () {
     console.log('save')
@@ -157,101 +302,6 @@ Page({
             })
           })
         }
-      }
-    })
-  },
-
-  passSubmit(e){
-    let _this = this;
-    console.log('e', e);
-    App.globalData.formId = e.detail.formId;
-    let _access_token = App.globalData.access_token;
-    let url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + _access_token;
-    let _jsonData = {
-        access_token: _access_token,
-        touser: App.globalData.openid,
-        template_id: '-1RkZaEQZ2YKukTI6wQ3Q9H0_M9Azp5-Nhy9hdWfMhQ',
-        form_id: e.detail.formId,
-        page: "pages/index/index",
-        data: {
-          "keyword1": { "value": "测试数据一", "color": "#173177" },
-          "keyword2": { "value": "测试数据二", "color": "#173177" },
-          "keyword3": { "value": "测试数据三", "color": "#173177" },
-          "keyword4": { "value": "测试数据四", "color": "#173177" },
-        }
-      }
-    wx.request({
-      url: url,
-      data: _jsonData,
-      method: method,
-      success: function (res) {
-        console.log(res)
-      },
-      fail: function (err) {
-        console.log('request fail ', err);
-      },
-      complete: function (res) {
-        console.log("request completed!");
-      }
-    })
-
-    // App.showModel("审核后不得修改，您决定好了吗？", function (e) {
-    //   console.log('e', e);
-    //   console.log('e', e.confirm);
-    //   if(e.confirm){
-    //     console.log("审核通过");
-    //     let prams = {
-    //       Id: _this.data.Id,
-    //       CheckStatus: "1",// 1通过，-1拒绝
-    //       Checker: App.globalData.userInfo.SName
-    //     }
-    //     console.log('prams', prams)
-    //     // 下面调用接口
-    //     App._post_form("api/visitors/check", prams, function (res) {
-    //       let result = JSON.parse(res)
-    //       console.log("result", result)
-    //       if (result.code == 1) {
-    //         App.showToast("操作成功");
-    //         setTimeout(function () {
-    //           wx.navigateTo({
-    //             url: "../checked/index"
-    //           });
-    //         }, 1000)
-    //       } else {
-    //         App.showToast("操作失败");
-    //       }
-    //     })
-    //   }
-    // })
-  },
-  refuseSubmit(){
-    let _this = this;
-    App.showModel("审核后不得修改，您决定好了吗？", function (e) {
-      console.log('e', e);
-      console.log('e', e.confirm);
-      if (e.confirm) {
-        console.log("审核拒绝");
-        let prams = {
-          Id: _this.data.Id,
-          CheckStatus: "-1",// 1通过，-1拒绝
-          Checker: App.globalData.userInfo.SName
-        }
-        console.log('prams', prams)
-        // 下面调用接口
-        App._post_form("api/visitors/check", prams, function (res) {
-          let result = JSON.parse(res)
-          console.log("result", result)
-          if (result.code == 1) {
-            App.showToast("操作成功");
-            setTimeout(function () {
-              wx.navigateTo({
-                url: "../checked/index"
-              });
-            }, 1000)
-          } else {
-            App.showToast("操作失败");
-          }
-        })
       }
     })
   },

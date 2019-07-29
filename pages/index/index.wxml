@@ -2,7 +2,7 @@
 <!-- <view class="container pd_b100" bindtouchstart='handletouchstart' bindtouchmove='handletouchmove' bindtouchend='handletouchend' bindtouchcancel='handletouchcancel'> -->
 <scroll-view class="scroll" scroll-y="true">
   <view class='form'>
-    <form bindsubmit="formSubmit">
+    <form bindsubmit="formSubmit" report-submit="true">
       <view class='title'>访客信息</view>
       <van-cell-group>
         <van-field name="Name" label="访客姓名" placeholder="请输入访客姓名" border="{{ false }}"/>

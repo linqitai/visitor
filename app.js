@@ -206,7 +206,17 @@ App({
     var time = new Date(t)
     var h = time.getHours()
     var mm = time.getMinutes()
-    return(h < 10 ? '0' + h : h) + ':' + (mm < 10 ? '0' + mm : mm)
+    return (h < 10 ? '0' + h : h) + ':' + (mm < 10 ? '0' + mm : mm)
+  },
+  getDateTime(t) {
+    var time = new Date(t)
+    var y = time.getFullYear()
+    var m = time.getMonth() + 1
+    var d = time.getDate()
+    var h = time.getHours()
+    var mm = time.getMinutes()
+    var ss = time.getSeconds()
+    return y + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d) + " " + (h < 10 ? '0' + h : h) + ':' + (mm < 10 ? '0' + mm : mm) + ':' + (ss < 10 ? '0' + ss : ss)
   },
   isNull(value){
     if (value == null || value == "") {

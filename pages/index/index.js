@@ -91,7 +91,41 @@ Page({
           //在这里发送微信服务消息通知访客
           let openid = result.openid;
           console.log('openid',openid)
-
+          if (openid != "") {
+            App.globalData.formId = e.detail.formId;
+            let _access_token = App.globalData.access_token;
+            let url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + _access_token;
+            let _jsonData = {
+              access_token: _access_token,
+              touser: App.globalData.OpenId4In,
+              template_id: 'KDwFmfR9VfOHl2ARYLEEsuc32WMm2vcAPwAveCXiWQY',//来访申请提醒模板
+              form_id: e.detail.formId,
+              page: "pages/firstPage/firstPage",
+              data: {
+                "keyword1": { "value": _this.data.form.Name, "color": "#173177" },
+                "keyword2": { "value": _this.data.form.Phone, "color": "#173177" },
+                "keyword3": { "value": _this.data.form.Date + " " + _this.data.form.StartTime, "color": "#173177" },
+                "keyword4": { "value": _this.data.form.Reason + " " + _this.data.form.Remark, "color": "#173177" },
+              }
+            }
+            console.log('_jsonData', _jsonData)
+            wx.request({
+              url: url,
+              data: _jsonData,
+              method: 'POST',
+              success: function (res) {
+                console.log('消息发送成功', res)
+              },
+              fail: function (err) {
+                console.log('request fail ', err);
+              },
+              complete: function (res) {
+                console.log("request completed!", res);
+              }
+            })
+          } else {
+            App.showError("被访人未用过此访客小程序，请电话联系对方登录此系统并审核确认");
+          }
           setTimeout(function(){
             wx.navigateTo({
               url: '../history/index',

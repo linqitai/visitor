@@ -17,8 +17,9 @@
     <form bindsubmit="formSubmit" report-submit="true">
       <view class='title'>被访人信息</view>
       <van-cell-group>
-        <van-field value="{{form.SMPhone}}" name="SMPhone" label="手机号" bindblur="getStaffInfoByPhone" placeholder="被访人手机号" clearable border="{{ false }}"/>
         <van-field value="{{form.SName}}" name="SName" label="姓名" bindblur="getStaffInfoByName" placeholder="被访人姓名" clearable border="{{ false }}"/>
+        <van-field value="{{form.SMPhone}}" name="SMPhone" label="手机号" bindblur="getStaffInfoByPhone" placeholder="被访人手机号" clearable border="{{ false }}"/>
+        
         <van-field value="{{form.SDDetailName}}" name="SDDetailName" label="部门" placeholder="被访人部门" clearable border="{{ false }}"/>
       </van-cell-group>
       <!-- <view class='wings_blank mt-20'>

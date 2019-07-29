@@ -91,6 +91,7 @@ Page({
     let SNo = _this.data.visitorList[index].SNo;
     let SMPhone = _this.data.visitorList[index].SMPhone;
     let SDDetailName = _this.data.visitorList[index].SDDetailName;
+    App.globalData.OpenId4In = _this.data.visitorList[index].OpenId4In;
     console.log('SNo', SNo)
     console.log('SMPhone', SMPhone)
     console.log('SDDetailName', SDDetailName)
@@ -160,7 +161,7 @@ Page({
     // }
     App._get("api/visitors/getStaffInfoByName", prams, function (res) {
       let result = JSON.parse(res)
-      console.log("result", result)
+      console.log("getStaffInfoByName result", result)
       if (result.code == 1) {
         console.log("data", result.data)
         _this.setData({
@@ -248,8 +249,8 @@ Page({
             "keyword1": { "value": _this.data.form.Name, "color": "#173177" },
             "keyword2": { "value": _this.data.form.Phone, "color": "#173177" },
             "keyword3": { "value": _this.data.form.Date + " " + _this.data.form.StartTime, "color": "#173177" },
-            "keyword4": { "value": _this.data.form.Reason + " " + _this.data.form.Remark, "color": "#173177" },
-          }
+            "keyword4": { "value": _this.data.reason_array[_this.data.form.Reason] + " "+ _this.data.form.Remark, "color": "#173177" }
+            }
         }
         console.log('_jsonData', _jsonData)
         wx.request({

@@ -67,6 +67,7 @@ Page({
     let url = "api/visitors/getListByNameOrPhone"
     App._post_form(url, prams, function (res) {
       let result = JSON.parse(res)
+      console.log('result', result)
       if (result.code == 1) {
         if (result.count == 0) {
           App.showToast("暂无记录")
