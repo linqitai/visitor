@@ -66,6 +66,11 @@
   padding: 24rpx 20rpx 24rpx 15px;
 }
 .item{background-color: white;font-size: 13px;margin-top: 2px;padding: 4px 12px;}
+.searchBox{
+  margin-top: 40rpx;
+  width: 90%;
+  margin-left: 5%;
+}
 .btn{
   margin-top: 40rpx;
   width: 90%;

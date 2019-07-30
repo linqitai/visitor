@@ -61,7 +61,8 @@ Page({
       Remark:""
     },
     qrcodeWidth: qrcodeWidth,
-    show: false
+    show: false,
+    inputAlign: 'center'
   },
   onShow: function () {
     // 刷新组件
@@ -223,6 +224,10 @@ Page({
     console.log('getUserInfo',event.detail);
     console.log('RefuseReason', _this.data.RefuseReason)
     console.log("refuseSubmit");
+    if (App.isNull(_this.data.RefuseReason)){
+      App.showToast("拒绝理由不能为空");
+      return;
+    }
     let prams = {
       Id: _this.data.Id,
       CheckStatus: "-1",// 1通过，-1拒绝
@@ -235,6 +240,7 @@ Page({
       let result = JSON.parse(res)
       console.log("result", result)
       if (result.code == 1) {
+        _this.setData({ show: false })
         let _access_token = App.globalData.access_token;
         let url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + _access_token;
         let _jsonData = {
@@ -280,8 +286,8 @@ Page({
       }
     })
   },
-  onClose() {
-    this.setData({ close: false });
+  handleClose() {
+    this.setData({ show: false });
   },
   refuseSubmit(e) {
     let _this = this;

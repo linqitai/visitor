@@ -19,8 +19,7 @@
       <van-field label="被访人姓名" value="{{ SName }}" placeholder="--" disabled border="{{ false }}"/>
       <van-field label="被访人手机号" value="{{ SMPhone }}" placeholder="--" disabled border="{{ false }}"/>
       <van-field label="被访人部门" value="{{ SDDetailName }}" placeholder="--" disabled border="{{ false }}"/>
-      <van-field label="审核结果" wx:if="{{CheckStatus == '0' && Type == 'check'}}" value="{{ CheckStatus=='0'?'未审核':CheckStatus=='1'?'审核通过':'审核拒绝' }} {{ RefuseReason }}" disabled border="{{ false }}"/>
-      <van-field label="审核结果" wx:if="{{CheckStatus == '1' || CheckStatus == '-1'}}" value="{{ CheckStatus=='0'?'未审核':CheckStatus=='1'?'审核通过':'审核拒绝' }} {{ RefuseReason }}" type="textarea" autosize disabled border="{{ false }}"/>
+      <van-field label="审核结果" value="{{ CheckStatus=='0'?'未审核':CheckStatus=='1'?'审核通过':'审核拒绝' }} {{ RefuseReason }}" type="textarea" autosize disabled border="{{ false }}"/>
      
       <van-field label="审核人" value="{{ Checker }}" placeholder="--" disabled border="{{ false }}"/>
       <van-field label="审核日期" value="{{ CheckDate }}" placeholder="--" disabled border="{{ false }}"/>
@@ -30,33 +29,6 @@
       <canvas class='canvas' style="width:{{qrcodeWidth}}px; height:{{qrcodeWidth}}px;" canvas-id='canvas' bindlongtap='save'></canvas>
       <view class='enterCode f-38'>预约码:{{ EnterCode }}</view>
       <view class='pd_b40 wings_blank'>到甲方单位的时候请提供此二维码或者报此数字邀约码进行确认(记得带身份证哦)</view>
-    </view>
-    <view wx:if="{{CheckStatus == '0' && Type == 'check'}}">
-    <form bindsubmit="passSubmit" report-submit="true">
-      <button class='btn color_white' formType="submit" type="primary"> 审核通过 </button>
-    </form>
-    <!-- <i-modal title="拒绝理由" visible="{{ show }}" bind:ok="getUserInfo" bind:cancel="handleClose">
-      <view class='sureBox'>
-        <van-field label="拒绝理由" value="{{ RefuseReason }}" placeholder="请给对方一个拒绝的理由" border="{{ false }}" type="textarea" autosize bindinput="resuseReasonInput"/>
-      </view>
-    </i-modal> -->
-    <van-dialog
-      class="zindex"
-      use-slot
-      title="拒绝理由"
-      show="{{ show }}"
-      show-cancel-button
-      confirm-button-open-type="getUserInfo"
-      bind:close="handleClose"
-      bind:getuserinfo="getUserInfo"
-    > 
-      <view class='sureBox'>
-        <van-field value="{{ RefuseReason }}" input-align="{{ inputAlign }}" placeholder="请给对方一个拒绝的理由" border="{{ false }}" bindinput="resuseReasonInput"/>
-      </view>
-    </van-dialog>
-    <form bindsubmit="refuseSubmit" report-submit="true">
-      <button class='btn color_white mb-40' formType="submit" type="warn"> 审核拒绝 </button>
-    </form>
     </view>
   </view>
 </scroll-view>

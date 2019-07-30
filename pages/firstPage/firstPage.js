@@ -6,7 +6,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    
+    EnterCode:""
   },
 
   /**
@@ -73,6 +73,18 @@ Page({
     //     console.log(res, "res")
     //   }
     // )
+  },
+  onChange(e){
+    console.log('e',e.detail)
+    this.setData({
+      EnterCode:e.detail
+    });
+  },
+  searchInfo(){
+    let _this = this;
+    wx.navigateTo({
+      url: '../detail2/index?EnterCode=' + _this.data.EnterCode,
+    })
   },
   toCheck() {
     App.globalData.tab_bar_type = "check"
