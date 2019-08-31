@@ -37,11 +37,13 @@
 		},
 		"miniprogram": {
 			"current": -1,
-			"list": [{
-          "id": -1,
-          "name": "访客登记",
-          "pathName": "pages/index/index"
-        }]
+			"list": [
+				{
+					"id": -1,
+					"name": "访客登记",
+					"pathName": "pages/index/index"
+				}
+			]
 		}
 	}
 }
