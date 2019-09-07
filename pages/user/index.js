@@ -14,12 +14,14 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    wx.setStorageSync('_from', '');
-    console.log(App.globalData.tab_bar,"App.globalData.tab_bar")
+    console.log(App.globalData.tab_bar_type,"App.globalData.tab_bar_type")
+    console.log('userInfo', App.globalData.userInfo)
     this.setData({
-      active: App.setActive(2), // 如果是商户，tab-bar会多一个批发，那么active动态+1
-      tab_bar: App.globalData.tab_bar
+      active: 2, 
+      tab_bar: App.getTab_bar(App.globalData.tab_bar_type),
+      userInfo: App.globalData.userInfo
     })
+    console.log('userInfo', this.data.userInfo)
   },
 
   /**
@@ -27,7 +29,7 @@ Page({
    */
   onShow: function () {
     let _this = this;
-    _this.getUserDetail();
+    //_this.getUserDetail();
   },
 
   /**
@@ -44,6 +46,16 @@ Page({
       }
     });
   },
-
-
+  logout(){
+    App.globalData.userInfo = {}
+    wx.navigateTo({
+      url: '../firstPage/firstPage',
+    })
+  },
+  updatePassword(){
+    console.log("到修改密码页面")
+    wx.navigateTo({
+      url: '../updatePassword/index',
+    })
+  }
 })

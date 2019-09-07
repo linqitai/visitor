@@ -5,29 +5,72 @@ App({
    */
   globalData: {
     user_id: null,
-    userInfo:'',
+    userInfo:{},
+    access_token: "",
+    appid: "wx9582ea0575cc85be",
+    secret: "384a72d1d9f91528bb87792eff567f7a",
+    openid:"",
+    OpenId4In:"",//在firstPage页面已经获得
+    OpenId4Out: "",//在firstPage页面已经获得
+    formId:"",
     cart1:0,
     cart2:0,
     is_pifa_selected:false,
-    tab_bar:[
+    sex_array: ['男', '女'],
+    reason_array: ['个人来访', '公务往来', '会议', '快递', '面试', '其他'],
+    number_array: ['1', '2', '3', '4', '5', '6', '多于6人'],
+    tab_bar_type:'',
+    tab_bar4in:[
       {
         name:'预约登记',
         icon:'register',
+        url:'/pages/index/index',
         is_show:true
       },
       {
-        name: '历史浏览',
+        name: '预约历史',
         icon: 'history',
+        url:'/pages/history/index',
         is_show: true
-      },
-      {
-        name: '批发',
-        icon: 'pifa',
-        is_show: false
       },
       {
         name: '个人中心',
         icon: 'person',
+        url:'/pages/user/index',
+        is_show: true
+      }
+    ],
+    tab_bar4out: [
+      {
+        name: '预约登记',
+        icon: 'register',
+        url: '/pages/date/index',
+        is_show: true
+      },
+      {
+        name: '预约历史',
+        icon: 'history',
+        url: '/pages/history/index',
+        is_show: true
+      }
+    ],
+    tab_bar4check: [
+      {
+        name: '预约审批',
+        icon: 'pifa',
+        url:'/pages/check/index',
+        is_show: true
+      },
+      {
+        name: '审批历史',
+        icon: 'history',
+        url: '/pages/checked/index',
+        is_show: true
+      },
+      {
+        name: '个人中心',
+        icon: 'person',
+        url: '/pages/user/index',
         is_show: true
       }
     ]
@@ -44,6 +87,20 @@ App({
     this.setApiRoot();
     //this.getCart_num();
     //this.getUserDetail()
+  },
+  getTab_bar(tab_bar_type){
+    let _this = this;
+    console.log('tab_bar_type', tab_bar_type)
+    if (tab_bar_type == 'in') {
+      console.log('App.globalData.tab_bar4in', _this.globalData.tab_bar4in)
+      return _this.globalData.tab_bar4in;
+    } else if (tab_bar_type == 'out') {
+      console.log('App.globalData.tab_bar4out', _this.globalData.tab_bar4out)
+      return _this.globalData.tab_bar4out;
+    } else if (tab_bar_type == 'check') {
+      console.log('App.globalData.tab_bar4check', _this.globalData.tab_bar4check)
+      return _this.globalData.tab_bar4check;
+    }
   },
   deal_number(order_total_price){
     if (order_total_price.indexOf(',') > -1) {
@@ -136,11 +193,50 @@ App({
   setApiRoot: function() {
     this.api_root = this.siteInfo.siteroot;
   },
+  // 获取完整的时间（年月日）
+  getDate(t) {
+    var time = new Date(t)
+    var y = time.getFullYear()
+    var m = time.getMonth() + 1
+    var d = time.getDate()
+    return y + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d)
+  },
+  // 获取完整的时间（时分）
+  getHM(t) {
+    var time = new Date(t)
+    var h = time.getHours()
+    var mm = time.getMinutes()
+    return (h < 10 ? '0' + h : h) + ':' + (mm < 10 ? '0' + mm : mm)
+  },
+  getDateTime(t) {
+    var time = new Date(t)
+    var y = time.getFullYear()
+    var m = time.getMonth() + 1
+    var d = time.getDate()
+    var h = time.getHours()
+    var mm = time.getMinutes()
+    var ss = time.getSeconds()
+    return y + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d) + " " + (h < 10 ? '0' + h : h) + ':' + (mm < 10 ? '0' + mm : mm) + ':' + (ss < 10 ? '0' + ss : ss)
+  },
   isNull(value){
     if (value == null || value == "") {
       return 1;
     }else{
       return 0;
+    }
+  },
+  nullReturnEmpty(value) {
+    if (value == null || value == "") {
+      return "";
+    } else {
+      return value;
+    }
+  },
+  isNullReturnLine(value) {
+    if (value == null || value == "") {
+      return "--";
+    } else {
+      return value;
     }
   },
   hasNull: function (params) {
@@ -286,7 +382,6 @@ App({
           }
           if (res.data.code === -1) {
             // 登录态失效, 重新登录
-            wx.hideNavigationBarLoading();
             App.doLogin();
           } else if (res.data.code === 0) {
             App.showError(res.data.msg);
@@ -356,7 +451,7 @@ App({
         });
       },
       complete: function(res) {
-        wx.hideLoading();
+        //wx.hideLoading();
         wx.hideNavigationBarLoading();
         complete && complete(res);
       }
