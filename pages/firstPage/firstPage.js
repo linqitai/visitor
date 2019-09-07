@@ -8,23 +8,29 @@ Page({
   data: {
     EnterCode:""
   },
-
+  onShow: function () {
+    
+  },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    console.log("onload");
+    this.login();
+  },
+  login(){
     wx.login({
       success: function (res) {
-        console.log('res',res)
+        console.log('res', res)
         if (res.code) {
           //发起网络请求
           // let code = res.code;
           //把code传给接口
           let d = {
-            appid:"wx9582ea0575cc85be",
-            secret:"384a72d1d9f91528bb87792eff567f7a",
+            appid: App.globalData.appid,
+            secret: App.globalData.secret,
             js_code: res.code,
-            grant_type:"authorization_code"
+            grant_type: "authorization_code"
           }
           let url = 'https://api.weixin.qq.com/sns/jscode2session?appid=' + d.appid + '&secret=' + d.secret + '&js_code=' + res.code + '&grant_type=authorization_code';
           wx.request({
@@ -34,45 +40,32 @@ Page({
             // header: {}, // 设置请求的 header  
             success: function (res) {
               console.log('res', res)
+              console.log('App.globalData.openid', res.data.openid)
               App.globalData.openid = res.data.openid;
               wx.setStorageSync('openid', res.data.openid)
               console.log('App.globalData.openid', App.globalData.openid)
               let prams = {
                 OpenId: App.globalData.openid
               }
-              App._post_form('api/visitors/haveUserInfo',prams,function(res){
-                console.log('havaUserInfo',res)
+              App._post_form('api/visitors/haveUserInfo', prams, function (res) {
+                console.log('havaUserInfo', res)
                 let result = JSON.parse(res);
-                if(result.code == 0){
+                if (result.code == 0) {
                   wx.navigateTo({
                     url: '../login/login',
                   })
                 }
               })
-              //var obj = {};
-              //obj.openid = res.data.openid;
-              //console.log(obj);
-              //wx.setStorageSync('user', obj);//存储openid  
             }
           });
         } else {
           console.log('获取用户登录态失败！' + res.errMsg)
         }
+      },
+      fail(e){
+        console.log("fail",e)
       }
     });
-    //wx.clearStorageSync();
-    // let isLogin = wx.getStorageSync('isLogin');
-    // console.log('isLogin', isLogin)
-    // if(!isLogin){
-    //   wx.navigateTo({
-    //     url: '../login/login',
-    //   })
-    // }
-    // App._get('api/personInfo/testLink', {},
-    //   function (res) {//成功
-    //     console.log(res, "res")
-    //   }
-    // )
   },
   onChange(e){
     console.log('e',e.detail)
