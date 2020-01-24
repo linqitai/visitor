@@ -63,6 +63,12 @@
           </view>
         </picker>
         <van-field name="Remark" label="备注说明" placeholder="备注信息" clearable border="{{ false }}"/>
+        <!-- <button style="margin:30rpx;" bindtap="chooseimage">获取图片</button>
+        <image src="{{tempFilePaths}}" mode="aspecFill" style="width: 100%; height: 450rpx"/> -->
+        <view class="myCanvasBox">
+          <button size="mini" type="primary" bindtap="uploadImage">上传人脸比对照片</button>
+          <canvas class="myCanvas" canvas-id="myCanvas"></canvas>
+        </view>
       </van-cell-group>
       <view class='wings_blank mt-20'>
         <button class='submit' type="primary" formType="submit" size='default'> 提 交 </button>

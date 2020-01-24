@@ -52,20 +52,19 @@ Page({
     })
     console.log("history")
     console.log('type', _this.data.type)
-    _this.getUncheckList();
+    // _this.getUncheckList();
   },
   getUncheckList(){
     let _this = this;
     let prams = {
-      Name: App.nullReturnEmpty(_this.data.form.Name),
+      Type: App.globalData.tab_bar_type,
       Phone: App.nullReturnEmpty(_this.data.form.Phone),
-      Type: App.globalData.tab_bar_type,
-      Type: App.globalData.tab_bar_type,
+      Name: App.nullReturnEmpty(_this.data.form.Name),
       CheckStatus:0 //0 未审核 1 已审核 -1 审核拒绝
     }
     console.log('prams', prams)
     let url = "api/visitors/getListByNameOrPhone"
-    App._post_form(url, prams, function (res) {
+    App._get(url, prams, function (res) {
       let result = JSON.parse(res)
       console.log('result', result)
       if (result.code == 1) {

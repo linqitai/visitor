@@ -11,8 +11,8 @@ Page({
       SInitialPassword:"",
       OpenId:""
     },
-    username:'13958776325',
-    password:'888888'
+    username:'',
+    password:''
   },
 
   /**

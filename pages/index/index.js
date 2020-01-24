@@ -102,7 +102,24 @@ Page({
     App.showModel("提交后不得修改，您确定要提交此访客单吗？", function (e) {
       console.log('e',e);
       // 下面调用接口
-      App._post_form("api/visitors/add4In", _this.data.form, function (res) {
+      let params = {
+        Name: _this.data.form.Name,
+        Sex: _this.data.form.Sex,
+        Phone: _this.data.form.Phone,
+        IdentityNumber: _this.data.form.IdentityNumber,
+        Reason: _this.data.form.Reason,
+        Number: _this.data.form.Number,
+        PlateNumber: _this.data.form.PlateNumber,
+        Unit: _this.data.form.Unit,
+        Date: _this.data.form.Date,
+        StartTime: _this.data.form.StartTime,
+        EndTime: _this.data.form.EndTime,
+        Remark: _this.data.form.Remark,
+        SNo: _this.data.form.SNo,
+        OpenId4In: _this.data.form.OpenId4In,
+        Checker: _this.data.form.Checker,
+      }
+      App._get("api/visitors/add4In", params, function (res) {
         console.log("res", res)
         let result = JSON.parse(res)
         if (result.code == 1) {

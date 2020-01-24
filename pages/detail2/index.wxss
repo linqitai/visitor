@@ -5,6 +5,9 @@
   width: 100%;
   height: auto;
 }
+.avatarUrl{
+  margin: 0 auto;
+}
 .enterCode{
   margin-bottom: 20rpx;
 }

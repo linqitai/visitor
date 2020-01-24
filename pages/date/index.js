@@ -2,6 +2,7 @@ let App = getApp();
 
 Page({
   data: {
+    tempFilePaths: "",
     // banner轮播组件属性
     indicatorDots: true, // 是否显示面板指示点	
     autoplay: true, // 是否自动切换
@@ -34,7 +35,8 @@ Page({
       EndTime: "",
       Remark:"",
       SMPhone:"",
-      SDDetailName:""
+      SDDetailName:"",
+      Image:""
     },
     show:false,
     radio:'',
@@ -42,7 +44,8 @@ Page({
     visitorList:[],
     sex_array: App.globalData.sex_array,
     reason_array: App.globalData.reason_array,
-    number_array: App.globalData.number_array
+    number_array: App.globalData.number_array,
+    imgUrl: '',
   },
   onShow: function () {
     // 刷新组件
@@ -81,6 +84,31 @@ Page({
     this.setData({ 'form.StartTime': '08:00' })
     this.setData({ 'form.EndTime': "17:00" })
   },
+  uploadImage: function (e) {
+    var _this = this;
+    wx.chooseImage({
+      count: 1, // 可选择图片的数量，默认为9，当前为1
+      sizeType: ['original', 'compressed'], // 可以指定是原图上传还是压缩图上传，默认二者都有，假如删掉'original'则只有压缩上传。
+      sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+      success: function (res) {
+        // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
+        var tempFilePaths = res.tempFilePaths;
+        _this.setData({
+          imgUrl: tempFilePaths[0]
+        }) //将生成的图片url保存下来，后面继续处理
+        console.log('imgUrl',_this.data.imgUrl);
+        //调用该处理函数的示例，this.data.imgUrl为上文中得到的上传文件tempFilePath
+        App.getBase64Image('myCanvas', _this.data.imgUrl, function (base64Data) {
+          //  在此处处理得到的base64数据
+          console.log('return_base64Data', base64Data);
+          _this.setData({
+            'form.Image': base64Data
+          });
+          console.log('form.Image', _this.data.form.Image);
+        },160,240);
+      }
+    })
+  },
   onClose() {
     this.setData({ show: false });
   },
@@ -103,6 +131,21 @@ Page({
     })
     console.log("form",_this.data.form)
   },
+  // chooseimage: function () {
+  //   var _this = this;
+  //   wx.chooseImage({
+  //     count: 1, // 默认9
+  //     sizeType: ['compressed'], // 可以指定是原图还是压缩图，默认二者都有 ['original', 'compressed']
+  //     sourceType: [ 'camera'], // 可以指定来源是相册还是相机，默认二者都有 ['album', 'camera']
+  //     success: function (res) {
+  //       // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
+  //       _this.setData({
+  //         tempFilePaths: res.tempFilePaths
+  //       })
+  //       console.log("tempFilePaths", _this.data.tempFilePaths);
+  //     }
+  //   })
+  // },
   getStaffInfoByPhone(e){
     let _this = this;
     console.log('e', e.detail.value)
@@ -155,10 +198,10 @@ Page({
     let prams = {
       SName: e.detail.value
     }
-    // if (prams.SName==""||prams.SName==null){
-    //   App.showToast("被访人姓名不得为空");
-    //   return;
-    // }
+    if (prams.SName==""||prams.SName==null){
+      App.showToast("请填写被访人姓名");
+      return;
+    }
     App._get("api/visitors/getStaffInfoByName", prams, function (res) {
       let result = JSON.parse(res)
       console.log("getStaffInfoByName result", result)
@@ -201,10 +244,10 @@ Page({
       form: e.detail.value,
       'form.SNo': _this.data.SNo,
       'form.OpenId4Out': wx.getStorageSync('openid'),
-      'form.OpenId4In': App.globalData.OpenId4In
+      'form.OpenId4In': App.globalData.OpenId4In,
+      'form.Image': _this.data.form.Image
     });
     console.log('getOpenId', wx.getStorageSync('openid'))
-    console.log('form', _this.data.form)
     if (App.isNull(_this.data.form.SName)) {
       App.showToast("被访人姓名不可为空"); return;
     }
@@ -217,10 +260,32 @@ Page({
     if (App.isNull(_this.data.form.IdentityNumber)) {
       App.showToast("证件号不可为空"); return;
     }
+    if (App.isNull(_this.data.form.Image)) {
+      App.showToast("请上传人脸比对照片"); return;
+    }
+    let params = {
+      Name: _this.data.form.Name,
+      Sex: _this.data.form.Sex,
+      Phone: _this.data.form.Phone,
+      IdentityNumber: _this.data.form.IdentityNumber,
+      Reason: _this.data.form.Reason,
+      Number: _this.data.form.Number,
+      PlateNumber: _this.data.form.PlateNumber,
+      Unit: _this.data.form.Unit,
+      Date: _this.data.form.Date,
+      StartTime: _this.data.form.StartTime,
+      EndTime: _this.data.form.EndTime,
+      Remark: _this.data.form.Remark,
+      SNo: _this.data.form.SNo,
+      OpenId4Out: _this.data.form.OpenId4Out,
+      OpenId4In: _this.data.form.OpenId4In,
+      Image: _this.data.form.Image,
+    }
+    console.log('params', params);
     App.showModel("提交后不得修改，您确定要提交此访客单吗？", function () {
       console.log("确定");
       // 下面调用接口
-      App._post_form("api/visitors/add4Out", _this.data.form, function (res) {
+      App._post_form("api/visitors/add4Out", params, function (res) {
         console.log("res", res)
         let result = JSON.parse(res)
         if (result.code == 1) {

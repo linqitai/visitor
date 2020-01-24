@@ -47,7 +47,8 @@ Page({
               let prams = {
                 OpenId: App.globalData.openid
               }
-              App._post_form('api/visitors/haveUserInfo', prams, function (res) {
+              console.log('prams', prams);
+              App._get('api/visitors/haveUserInfo', prams, function (res) {
                 console.log('havaUserInfo', res)
                 let result = JSON.parse(res);
                 if (result.code == 0) {

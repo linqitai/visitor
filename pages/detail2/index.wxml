@@ -25,6 +25,9 @@
       <van-field label="审核日期" value="{{ CheckDate }}" placeholder="--" disabled border="{{ false }}"/>
 
     </form >
+    <view class="enterCodeBox mt-40" wx:if="{{AvatarUrl}}">
+    <image class='avatarUrl' src="{{AvatarUrl}}" style="width:{{qrcodeWidth}}px; height:{{qrcodeWidth}}px;" ></image>
+    </view>
     <view class='enterCodeBox' wx:if="{{CheckStatus == '1' && Type == 'out'}}">
       <canvas class='canvas' style="width:{{qrcodeWidth}}px; height:{{qrcodeWidth}}px;" canvas-id='canvas' bindlongtap='save'></canvas>
       <view class='enterCode f-38'>预约码:{{ EnterCode }}</view>

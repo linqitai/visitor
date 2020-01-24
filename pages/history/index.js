@@ -95,6 +95,7 @@ Page({
     App._post_form(url, _this.data.form, function (res) {
       // console.log("res", res)
       let result = JSON.parse(res)
+      console.log('result', result)
       if (result.code == 1) {
         //console.log("data", result.data)
         if (result.count==0){
