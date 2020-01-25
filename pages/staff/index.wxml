@@ -1,0 +1,38 @@
+<refresh-view id='refreshView' bind:onRefresh="onPullDownRefresh"/>
+<form bindsubmit="formSubmit" report-submit="true">
+  <view class='title'>内部人员信息录入</view>
+  <van-cell-group>
+    <van-field value="{{form.SName}}" name="SName" label="姓名" maxlength="{{maxlengthSName}}" placeholder="请填写您的姓名" clearable border="{{ false }}"/>
+    <picker name="SSex" value="{{form.SSex}}" range="{{sex_array}}" bindchange="bindSexPickerChange">
+      <view class="picker">
+        <label class='label'>访客性别</label><text class='text'>{{sex_array[form.SSex]}}</text>
+      </view>
+    </picker>
+    <van-field value="{{form.SMPhone}}" name="SMPhone" label="手机号" placeholder="请填写您的手机号(账号)" clearable border="{{ false }}" maxlength="{{maxlengthPhone}}"/>
+    
+    <van-field value="{{form.SDDetailName}}" name="SDDetailName" label="部门" placeholder="请填写您所在部门" clearable border="{{ false }}"/>
+    <van-field value="{{form.SInitialPassword}}" name="SInitialPassword" label="设置密码" placeholder="请设置密码" clearable border="{{ false }}"  type="password"/>
+  </van-cell-group>
+  <view class='wings_blank mt-20'>
+    <view class="red">请准确填写信息</view>
+    <view class="placeholder10"></view>
+    <button class='submit' type="primary" formType="submit" size='default'> 添 加 </button>
+  </view>
+</form >
+<!-- <view class='wings_blank mt-20' style="text-align:center">
+  <button type="primary" size='medium' bindtap="addStaffBtn"> 添 加 </button>
+</view> -->
+<!-- <view class='title' wx:if="{{count>0}}">查询结果</view> -->
+<scroll-view class="list" scroll-y="true" lower-threshold="50" scroll-top="{{scrollTop}}" scroll-y="true" bindscrolltoupper="scrollToUpper">
+  <navigator class='item' wx:for="{{dataList}}" wx:for-index="index" wx:key="index">
+    <view class='line'>
+      <label class="left">姓名：{{item.SName}}</label><label class='right'>性别：{{item.SSex==0?'男':'女'}}</label>
+    </view>
+    <view class='line'>
+      <label class="left">部门：{{item.SDDetailName}}</label><label class='right'>手机号：{{item.SMPhone}}</label>
+    </view>
+  </navigator>
+  <view class="title-footer" wx:if="{{count>0}}">
+    <text class="f-24 col-9 cont">数据加载完毕</text>
+  </view>
+</scroll-view>

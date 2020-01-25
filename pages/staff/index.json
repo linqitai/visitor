@@ -1,8 +1,8 @@
 {
-    "navigationBarTitleText": "授权登录",
     "usingComponents": {
+      "refresh-view": "/components/RefreshView/refresh-view",
+      "tab-bar": "/components/TabBar/tabbar",
       "van-field": "/dist/field/index",
-      "van-button": "/dist/button/index",
       "i-modal": "/iView/modal/index"
     }
 }

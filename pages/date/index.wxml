@@ -4,7 +4,7 @@
   <van-action-sheet show="{{ show }}" title="{{title}}" bind:close="onClose">
     <view style='padding-left:24rpx;'>
       <van-radio-group value="{{ radio }}" checked-color="#07c160" bind:change="onChange">
-        <van-radio wx:for="{{visitorList}}" wx:key="{{index}}" name="{{index}}" >
+        <van-radio wx:for="{{visitorList}}" wx:for-index="index" wx:key="index" name="{{index}}" >
           <view class="item">
             <view class='name'>{{item.SName}} {{item.SSex}} {{item.SMPhone}}</view>
             <view class='department'>{{item.SDDetailName}}</view>

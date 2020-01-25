@@ -79,7 +79,7 @@ Page({
       active: 0,
       tab_bar: App.getTab_bar(App.globalData.tab_bar_type)
     })
-    console.log('tab_bar', _this.data.tab_bar)
+    //console.log('tab_bar', _this.data.tab_bar)
     this.setData({ 'form.Date': App.getDate(new Date().getTime() + 24 * 60 * 60 * 1000) })
     this.setData({ 'form.StartTime': '08:00' })
     this.setData({ 'form.EndTime': "17:00" })

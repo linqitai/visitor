@@ -5,3 +5,15 @@
   background: linear-gradient(to bottom, #ffffff 0%,#37ffce 100%);
   text-align: center;
 }
+.modelBox{
+  text-align: left;
+  padding-left: 12px;
+  padding-right: 12px;
+  height: 400px;
+}
+.tip{
+  margin-top: 10px;
+  text-indent: 2em;
+  word-wrap: break-word;
+  text-align: left;
+}

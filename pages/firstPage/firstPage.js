@@ -6,7 +6,12 @@ Page({
    * 页面的初始数据
    */
   data: {
-    EnterCode:""
+    EnterCode:"",
+    visible1: false,
+    form:{
+      qxm: "",
+    },
+    isShow:false
   },
   onShow: function () {
     
@@ -79,6 +84,58 @@ Page({
     wx.navigateTo({
       url: '../detail2/index?EnterCode=' + _this.data.EnterCode,
     })
+  },
+  handleClose1() {
+    this.setData({
+      visible1: false
+    });
+  },
+  formSubmit(e) {
+    let _this = this;
+    _this.setData({
+      form: e.detail.value,
+    });
+    console.log("e.detail.value", e.detail.value)
+    console.log("_this.data.form.qxm", _this.data.form.qxm)
+    let params = {
+      SMPhone:'13958776325'
+    }
+    App._get("api/visitors/getMasterPS", params, function (res) {
+      let result = JSON.parse(res)
+      console.log("result", result)
+      if (result.code == 1) {
+        if (result.data[0].SInitialPassword == _this.data.form.qxm) {
+          App.showToast("验证成功");
+          _this.setData({
+            visible1: false
+          });
+          wx.navigateTo({
+            url: '../staff/index',
+          })
+        } else {
+          App.showToast("权限码有误");
+        }
+      } else {
+        console.log("msg", result.msg)
+        App.showToast(result.msg);
+      }
+    })
+  },
+  modalOK() {
+    console.log('this.qxm',this.qxm);
+    if(this.qxm=='666777'){
+      this.setData({
+        visible1: false
+      });
+      wx.navigateTo({
+        url: '../staff/index',
+      })
+    }else{
+      App.showToast("权限码有误");
+    }
+  },
+  toStaff() {
+    this.setData({ visible1: true });
   },
   toCheck() {
     App.globalData.tab_bar_type = "check"

@@ -1090,18 +1090,21 @@ App({
     tab_bar_type:'',
     tab_bar4in:[
       {
+        id:1,
         name:'预约登记',
         icon:'register',
         url:'/pages/index/index',
         is_show:true
       },
       {
+        id: 2,
         name: '预约历史',
         icon: 'history',
         url:'/pages/history/index',
         is_show: true
       },
       {
+        id: 3,
         name: '个人中心',
         icon: 'person',
         url:'/pages/user/index',
@@ -1110,12 +1113,14 @@ App({
     ],
     tab_bar4out: [
       {
+        id: 1,
         name: '预约登记',
         icon: 'register',
         url: '/pages/date/index',
         is_show: true
       },
       {
+        id: 2,
         name: '预约历史',
         icon: 'history',
         url: '/pages/history/index',
@@ -1124,18 +1129,21 @@ App({
     ],
     tab_bar4check: [
       {
+        id: 1,
         name: '预约审批',
         icon: 'pifa',
         url:'/pages/check/index',
         is_show: true
       },
       {
+        id: 2,
         name: '审批历史',
         icon: 'history',
         url: '/pages/checked/index',
         is_show: true
       },
       {
+        id: 3,
         name: '个人中心',
         icon: 'person',
         url: '/pages/user/index',

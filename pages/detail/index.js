@@ -75,8 +75,8 @@ Page({
   },
   onLoad: function (options) {
     let _this = this;
-    console.log('item.CreateTime', options.CreateTime);
-    console.log('item.Image', options.Image);
+    // console.log('item.CreateTime', options.CreateTime);
+    // console.log('item.Image', options.Image);
     this.setData({
       Type: App.globalData.tab_bar_type,
       active: 1,
@@ -225,9 +225,9 @@ Page({
   },
   getUserInfo(event) {
     let _this = this;
-    console.log('getUserInfo',event.detail);
-    console.log('RefuseReason', _this.data.RefuseReason)
-    console.log("refuseSubmit");
+    // console.log('getUserInfo',event.detail);
+    // console.log('RefuseReason', _this.data.RefuseReason)
+    // console.log("refuseSubmit");
     if (App.isNull(_this.data.RefuseReason)){
       App.showToast("拒绝理由不能为空");
       return;
