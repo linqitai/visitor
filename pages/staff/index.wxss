@@ -8,3 +8,19 @@
   height: auto;
   font-size: 14px;
 }
+.picker2{
+  padding: 4px 12px;
+  background-color: #fff;
+  font-size: 14px;
+}
+.picker2 .label{
+  margin-left: 1px !important; 
+}
+.picker2 .text{
+  margin-left: 62px !important; 
+}
+
+.iconBox{
+  text-align: center;
+  padding-top: 10px;
+}

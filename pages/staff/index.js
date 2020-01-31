@@ -20,11 +20,11 @@ Page({
     maxlengthSName: 10,
     maxlengthIndentityNumber:18,
     form:{
+      SNo:"",
       SSex:"0",
       SName: "",
       SMPhone:"",
-      SDDetailName:"",
-      SInitialPassword:""
+      SCarNo:"",
     },
     visible1:false,
     type: '',
@@ -47,8 +47,12 @@ Page({
   },
   onLoad: function (options) {
     let _this = this;
-    App._post_form('api/visitors/getStaffList', null, function (res) {
-      // console.log('getStaffList', res);
+    //console.log('onLoad');
+    let params = {
+      SDId: App.globalData.userInfo.SDId
+    }
+    App._get('api/visitors/getStaffList', params, function (res) {
+      //console.log('getStaffList', res);
       let result = JSON.parse(res);
       _this.setData({ dataList: result.data });
     })
@@ -65,13 +69,35 @@ Page({
   },
   addStaffBtn(){
     let _this = this;
-    console.log("addStaffBtn");
-    console.log("form",_this.data.form);
+    //console.log("addStaffBtn");
+    //console.log("form",_this.data.form);
   },
   bindSexPickerChange(e) {
-    console.log('sex', e.detail.value)
+    //console.log('sex', e.detail.value)
     this.setData({
       'form.SSex': e.detail.value
+    });
+  },
+  deleteBtn(event){
+    let _this = this;
+    console.log("event", event.currentTarget.dataset.id);
+    let id = event.currentTarget.dataset.id;
+    let name = event.currentTarget.dataset.name;
+    App.showModel(`您确定要删除【${name}】吗？`,function(){
+      console.log("delete");
+      let params = {
+        Id: id
+      }
+      App._post_form("api/visitors/deleteStaffInfo", params, function (res) {
+        let result = JSON.parse(res);
+        console.log('result', result);
+        if (result.code == 0) {
+          App.showError('删除失败');
+        } else {
+          App.toast('删除成功');
+          _this.onLoad();
+        }
+      })
     });
   },
   formSubmit(e){
@@ -79,19 +105,23 @@ Page({
     _this.setData({
       form: e.detail.value
     });
-    if (_this.data.form.SName.length > 20 || _this.data.form.SName.length < 2) {
-      App.toast("请填写少于2~20个字的姓名"); return;
+    if (_this.data.form.SNo.length > 11) {
+      App.showError("请填写少于11个字的编号"); return;
     }
-    if (_this.data.form.SDDetailName.length > 20) {
-      App.toast("请填写少于20个字的部门"); return;
+    if (_this.data.form.SName.length > 20 || _this.data.form.SName.length < 2) {
+      App.showError("请填写2~20个字的姓名"); return;
+    }
+    if (_this.data.form.SCarNo.length > 10) {
+      App.showError("请填写少于10个字的车牌号"); return;
     }
     if (!(/^(1[3-9])\d{9}$/).test(_this.data.form.SMPhone)){
-      App.toast("请填写合法手机号");return;
+      App.showError("请填写合法手机号");return;
     }
-    if (!(/^[A-Za-z0-9._]{6,20}$/).test(_this.data.form.SInitialPassword)) {
-      App.toast("请填写6~20位登录密码，由'字母或数字或._'组成"); return;
-    }
-    console.log('form', _this.data.form)
+    this.setData({
+      'form.SDId': App.globalData.userInfo.SDId,
+      'form.SDDetailName': App.globalData.userInfo.SDDetailName
+    });
+    //console.log('form', _this.data.form)
     App._post_form("api/visitors/addStaff", _this.data.form, function (res) {
       let result = JSON.parse(res);
       console.log('result', result);

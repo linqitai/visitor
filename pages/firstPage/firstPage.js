@@ -135,7 +135,17 @@ Page({
     }
   },
   toStaff() {
-    this.setData({ visible1: true });
+    // this.setData({ visible1: true });
+    App.globalData.tab_bar_type = "staff"
+    if (App.globalData.userInfo.SName) {
+      wx.navigateTo({
+        url: '../staff/index',
+      })
+    } else {
+      wx.navigateTo({
+        url: '../login4Admin/login2',
+      })
+    }
   },
   toCheck() {
     App.globalData.tab_bar_type = "check"

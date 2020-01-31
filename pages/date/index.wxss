@@ -2,10 +2,15 @@
 /* @import "components/search/search.wxss"; */
 
 .myCanvasBox{
-  width: 92%;
-  margin-left: 5%;
   margin-top: 10px;
   text-align: center;
+}
+.myCanvas{
+  text-align: center;
+  width: 200px;
+  height: 300px;
+  margin-left: 50%;
+  transform: translateX(-50%)
 }
 .form{
   width: 100%;

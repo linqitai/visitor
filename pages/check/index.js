@@ -40,6 +40,7 @@ Page({
       frontColor: '#ffffff', // 必写项
       backgroundColor: "#228B22" // 传递的颜色值
     })
+    this.getUncheckList();
   },
   onLoad: function (options) {
     let _this = this;

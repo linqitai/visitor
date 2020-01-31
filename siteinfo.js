@@ -1,7 +1,7 @@
 module.exports = {
   name: "访客系统",
-  siteroot: "https://www.xxyzn.cn/",
-  // siteroot:"http://260v8q4212.wicp.vip:29504/",
+  // siteroot: "https://www.xxyzn.cn/",
+  siteroot:"http://260v8q4212.wicp.vip:39140/",
   // siteroot:"http://localhost:7624/",
   //siteroot:"http://qfui66.natappfree.cc/",
   // siteroot:"http://192.168.1.140:8087/",

@@ -34,6 +34,8 @@
 .placeholder10{
   height: 10px;
 }
+.ml-10{margin-left: 10rpx;}
+.ml-20{margin-left: 20rpx;}
 .mt-20{margin-top: 20rpx;}
 .mt-40{margin-top: 40rpx;}
 .mt-60{margin-top: 60rpx;}

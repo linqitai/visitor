@@ -162,7 +162,7 @@ Page({
               }
             })
           } else {
-            App.showError("此访客尚未在此系统开通微信服务消息收发权限，请主动联系对方并把此次预约码（" + result.ordercode +"）告诉对方，方便下次预约");
+            App.showError("预约成功，但此访客尚未在此系统开通微信服务消息收发权限，请主动联系对方并把此次预约码（" + result.ordercode +"）告诉对方");
           }
           setTimeout(function(){
             wx.navigateTo({

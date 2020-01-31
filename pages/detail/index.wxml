@@ -27,13 +27,13 @@
 
     </form >
     <view class="enterCodeBox mt-40">
-    <view style="line-height:18px;text-align:center">比对照片</view>
+    <view style="line-height:18px;text-align:center">本人头像</view>
     <image class='avatarUrl' src="{{Image}}" style="width:100%;min-height:300px;" ></image>
     </view>
     <view class='enterCodeBox' wx:if="{{CheckStatus == '1'}}">
       <canvas class='canvas' style="width:{{qrcodeWidth}}px; height:{{qrcodeWidth}}px;" canvas-id='canvas' bindlongtap='save'></canvas>
       <view class='enterCode f-38'>预约码:{{ EnterCode }}</view>
-      <view class='pd_b40 wings_blank'>到甲方单位的时候请提供此二维码或者报此数字邀约码进行确认(记得带身份证哦)</view>
+      <view class='pd_b40 wings_blank'>请将预约二维码或预约码发送给访客</view>
     </view>
     <view wx:if="{{CheckStatus == '0' && Type == 'check'}}">
     <form bindsubmit="passSubmit" report-submit="true">

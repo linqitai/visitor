@@ -1085,7 +1085,7 @@ App({
     cart2:0,
     is_pifa_selected:false,
     sex_array: ['男', '女'],
-    reason_array: ['个人来访', '公务往来', '会议', '快递', '面试', '其他'],
+    reason_array: ['个人来访', '公务往来', '传送文件', '应聘招工', '基建施工', '会议', '快递', '物流', '参观', '信访', '面试', '培训', '其他'],
     number_array: ['1', '2', '3', '4', '5', '6', '多于6人'],
     tab_bar_type:'',
     tab_bar4in:[
@@ -1344,15 +1344,15 @@ App({
   //转换处理函数
   getBase64Image (canvasId, imgUrl, callback, imgWidth, imgHeight) {
     const ctx = wx.createCanvasContext(canvasId);
-    ctx.drawImage(imgUrl, 0, 0, imgWidth || 300, imgHeight || 500);
+    ctx.drawImage(imgUrl, 0, 0, imgWidth || 200, imgHeight || 300);
     ctx.draw(false, () => {
       // API 1.9.0 获取图像数据
       wx.canvasGetImageData({
         canvasId: canvasId,
         x: 0,
         y: 0,
-        width: imgWidth || 300,
-        height: imgHeight || 500,
+        width: imgWidth || 200,
+        height: imgHeight || 300,
         success(res) {
           var result = res;
           // png编码

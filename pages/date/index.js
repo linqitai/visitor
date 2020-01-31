@@ -88,8 +88,8 @@ Page({
     var _this = this;
     wx.chooseImage({
       count: 1, // 可选择图片的数量，默认为9，当前为1
-      sizeType: ['original', 'compressed'], // 可以指定是原图上传还是压缩图上传，默认二者都有，假如删掉'original'则只有压缩上传。
-      sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+      sizeType: ['original'], // ['original', 'compressed']可以指定是原图上传还是压缩图上传，默认二者都有，假如删掉'original'则只有压缩上传。
+      sourceType: ['album', 'camera'], // ['album', 'camera']可以指定来源是相册还是相机，默认二者都有
       success: function (res) {
         // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
         var tempFilePaths = res.tempFilePaths;
@@ -100,12 +100,12 @@ Page({
         //调用该处理函数的示例，this.data.imgUrl为上文中得到的上传文件tempFilePath
         App.getBase64Image('myCanvas', _this.data.imgUrl, function (base64Data) {
           //  在此处处理得到的base64数据
-          console.log('return_base64Data', base64Data);
+          // console.log('return_base64Data', base64Data);
           _this.setData({
             'form.Image': base64Data
           });
-          console.log('form.Image', _this.data.form.Image);
-        },160,240);
+          // console.log('form.Image', _this.data.form.Image);
+        });
       }
     })
   },
@@ -280,6 +280,7 @@ Page({
       OpenId4Out: _this.data.form.OpenId4Out,
       OpenId4In: _this.data.form.OpenId4In,
       Image: _this.data.form.Image,
+      CheckStatus: '0'
     }
     console.log('params', params);
     App.showModel("提交后不得修改，您确定要提交此访客单吗？", function () {

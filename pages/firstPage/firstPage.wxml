@@ -23,7 +23,7 @@
       </van-field>
     </van-cell-group>
   </view>
-  <view class="modelBox">
+  <!-- <view class="modelBox">
     <i-modal title="内部人员权限验证" visible="{{ visible1 }}" show-ok="{{isShow}}" show-cancel="{{isShow}}" action-mode="vertical">
       <form bindsubmit="formSubmit" report-submit="true">
         <view class="placeholder10"></view>
@@ -35,7 +35,6 @@
           <button type="default" size='default' bindtap="handleClose1"> 取 消 </button>
         </view>
       </form >
-      <!-- <view class="tip">若不知道权限码，请向管理员要权限码</view> -->
     </i-modal>  
-  </view>
+  </view> -->
 </view>
