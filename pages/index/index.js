@@ -40,30 +40,14 @@ Page({
     number_array: App.globalData.number_array
   },
   onShow: function () {
+    let _this = this;
     // 刷新组件
     this.refreshView = this.selectComponent("#refreshView")
     // App._get("api/visitors/testLink",{},function(res){
     //   console.log('res',res)
     // })
     console.log('App.globalData.userInfo',App.globalData.userInfo)
-    if (App.globalData.access_token == "") {
-      let d = {
-        appid: App.globalData.appid,
-        secret: App.globalData.secret,
-        grant_type: "client_credential"
-      }
-      let url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + d.appid + "&secret=" + d.secret;
-      wx.request({
-        url: url,
-        data: {},
-        method: 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT  
-        // header: {}, // 设置请求的 header  
-        success: function (res) {
-          console.log('res', res)
-          App.globalData.access_token = res.data.access_token;
-        }
-      });
-    }
+    _this.get_access_token();
   },
   onLoad: function (options) {
     let _this = this;
@@ -76,6 +60,32 @@ Page({
     this.setData({ 'form.Date': App.getDate(new Date().getTime() + 24 * 60 * 60 * 1000) })
     this.setData({ 'form.StartTime': '08:00' })
     this.setData({ 'form.EndTime': "17:00" })
+  },
+  get_access_token() {
+    let _this = this;
+
+    if (App.globalData.access_token == "") {
+      let prams = {
+        appid: App.globalData.appid,
+        secret: App.globalData.secret
+      }
+      App._post_form('api/visitors/getAccess_token', prams, function (res) {
+        // let result = JSON.parse(res);
+        console.log('res', res)
+        App.globalData.access_token = res;
+      })
+      // let url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + d.appid + "&secret=" + d.secret;
+      // wx.request({
+      //   url: url,
+      //   data: {},
+      //   method: 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT  
+      //   // header: {}, // 设置请求的 header  
+      //   success: function (res) {
+      //     console.log('res', res)
+      //     App.globalData.access_token = res.data.access_token;
+      //   }
+      // });
+    }
   },
   formSubmit(e) {
     let _this = this;
@@ -112,38 +122,52 @@ Page({
           console.log('openid',openid)
           if (openid != "") {
             let _access_token = App.globalData.access_token;
-            let url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + _access_token;
-            console.log('result.ordercode', result.ordercode)
-            let _jsonData = {
-              access_token: _access_token,//有问题
-              touser: openid,
-              template_id: 'R8sYQm8vDdeXxtM_1xtp-ott5PtK125o9_IAibqpHrc',//预约结果通知
-              form_id: App.globalData.formId,
-              page: "pages/firstPage/firstPage",
-              data: {
-                "keyword1": { "value": _this.data.form.Name, "color": "#173177" },//预约对象
-                "keyword2": { "value": _this.data.form.Date + " " + _this.data.form.StartTime, "color": "#173177" },//预约时间
-                "keyword3": { "value": App.globalData.userInfo.SName, "color": "#173177" },//联系人
-                "keyword4": { "value": App.globalData.userInfo.SMPhone, "color": "#173177" },//电话电话
-                "keyword5": { "value": App.globalData.userInfo.SDDetailName, "color": "#173177" },//联系地址
-                "keyword6": { "value": result.ordercode, "color": "#173177" }//预约码
-              }
+            let p = {
+              access_token : _access_token,
+              openid : openid,
+              template_id : 'R8sYQm8vDdeXxtM_1xtp-ott5PtK125o9_IAibqpHrc',
+              form_id : App.globalData.formId,
+              name : _this.data.form.Name,
+              SMPhone : App.globalData.userInfo.SMPhone,
+              SDDetailName : App.globalData.userInfo.SDDetailName,
+              ordercode : result.ordercode
             }
-            console.log('_jsonData', _jsonData)
-            wx.request({
-              url: url,
-              data: _jsonData,
-              method: 'POST',
-              success: function (res) {
-                console.log('消息发送成功', res)
-              },
-              fail: function (err) {
-                console.log('request fail ', err);
-              },
-              complete: function (res) {
-                console.log("request completed!", res);
-              }
+            App._post_form('api/visitors/sendMessage', p, function (res) {
+              // let result = JSON.parse(res);
+              console.log('res', res)
             })
+            // let url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + _access_token;
+            // console.log('result.ordercode', result.ordercode)
+            // let _jsonData = {
+            //   access_token: _access_token,//有问题
+            //   touser: openid,
+            //   template_id: 'R8sYQm8vDdeXxtM_1xtp-ott5PtK125o9_IAibqpHrc',//预约结果通知
+            //   form_id: App.globalData.formId,
+            //   page: "pages/firstPage/firstPage",
+            //   data: {
+            //     "keyword1": { "value": _this.data.form.Name, "color": "#173177" },//预约对象
+            //     "keyword2": { "value": _this.data.form.Date + " " + _this.data.form.StartTime, "color": "#173177" },//预约时间
+            //     "keyword3": { "value": App.globalData.userInfo.SName, "color": "#173177" },//联系人
+            //     "keyword4": { "value": App.globalData.userInfo.SMPhone, "color": "#173177" },//电话电话
+            //     "keyword5": { "value": App.globalData.userInfo.SDDetailName, "color": "#173177" },//联系地址
+            //     "keyword6": { "value": result.ordercode, "color": "#173177" }//预约码
+            //   }
+            // }
+            // console.log('_jsonData', _jsonData)
+            // wx.request({
+            //   url: url,
+            //   data: _jsonData,
+            //   method: 'POST',
+            //   success: function (res) {
+            //     console.log('消息发送成功', res)
+            //   },
+            //   fail: function (err) {
+            //     console.log('request fail ', err);
+            //   },
+            //   complete: function (res) {
+            //     console.log("request completed!", res);
+            //   }
+            // })
           } else {
             App.showError("此访客尚未在此系统开通微信服务消息收发权限，请主动联系对方并把此次预约码（" + result.ordercode +"）告诉对方，方便下次预约");
           }

@@ -32,38 +32,52 @@ Page({
             js_code: res.code,
             grant_type: "authorization_code"
           }
-          let url = 'https://api.weixin.qq.com/sns/jscode2session?appid=' + d.appid + '&secret=' + d.secret + '&js_code=' + res.code + '&grant_type=authorization_code';
-          wx.request({
-            url: url,
-            data: {},
-            method: 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT  
-            // header: {}, // 设置请求的 header  
-            success: function (res) {
-              console.log('res', res)
-              console.log('App.globalData.openid', res.data.openid)
-              App.globalData.openid = res.data.openid;
-              wx.setStorageSync('openid', res.data.openid)
-              console.log('App.globalData.openid', App.globalData.openid)
-              let prams = {
-                OpenId: App.globalData.openid
-              }
-              App._post_form('api/visitors/haveUserInfo', prams, function (res) {
-                console.log('havaUserInfo', res)
-                let result = JSON.parse(res);
-                if (result.code == 0) {
-                  wx.navigateTo({
-                    url: '../login/login',
-                  })
-                }
-              })
+          App._post_form('api/visitors/getOpenId', d, function (res) {
+            console.log('res', res)
+            App.globalData.openid = res;
+            wx.setStorageSync('openid', res)
+            console.log('App.globalData.openid', App.globalData.openid)
+            let prams = {
+              OpenId: App.globalData.openid
             }
+            App._post_form('api/visitors/haveUserInfo', prams, function (res) {
+              console.log('havaUserInfo', res)
+              let result = JSON.parse(res);
+              if (result.code == 0) {
+                wx.navigateTo({
+                  url: '../login/login',
+                })
+              }
+            })
           });
+          // let url = 'https://api.weixin.qq.com/sns/jscode2session?appid=' + d.appid + '&secret=' + d.secret + '&js_code=' + res.code + '&grant_type=authorization_code';
+          // wx.request({
+          //   url: url,
+          //   data: {},
+          //   method: 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT  
+          //   // header: {}, // 设置请求的 header  
+          //   success: function (res) {
+          //     console.log('res', res)
+          //     App.globalData.openid = res.data.openid;
+          //     wx.setStorageSync('openid', res.data.openid)
+          //     console.log('App.globalData.openid', App.globalData.openid)
+          //     let prams = {
+          //       OpenId: App.globalData.openid
+          //     }
+          //     App._post_form('api/visitors/haveUserInfo',prams,function(res){
+          //       console.log('havaUserInfo',res)
+          //       let result = JSON.parse(res);
+          //       if(result.code == 0){
+          //         wx.navigateTo({
+          //           url: '../login/login',
+          //         })
+          //       }
+          //     })
+          //   }
+          // });
         } else {
           console.log('获取用户登录态失败！' + res.errMsg)
         }
-      },
-      fail(e){
-        console.log("fail",e)
       }
     });
   },

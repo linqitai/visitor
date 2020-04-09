@@ -128,27 +128,36 @@ Page({
     // 生成图片，绘制完成后调用回调
     qrcode.makeCode(_this.data.EnterCode)
     if (_this.data.CheckStatus=='0'&&_this.data.Type=='check'){
-      if (App.globalData.access_token==""){
-        let d = {
-          appid: App.globalData.appid,
-          secret: App.globalData.secret,
-          grant_type: "client_credential"
-        }
-        let url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + d.appid + "&secret=" + d.secret;
-        wx.request({
-          url: url,
-          data: {},
-          method: 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT  
-          // header: {}, // 设置请求的 header  
-          success: function (res) {
-            console.log('res', res)
-            App.globalData.access_token = res.data.access_token;
-          }
-        });
-      }
-      
+      _this.get_access_token();
     }
   },
+  get_access_token() {
+    let _this = this;
+
+    if (App.globalData.access_token == "") {
+      let prams = {
+        appid: App.globalData.appid,
+        secret: App.globalData.secret,
+      }
+      App._post_form('api/visitors/getAccess_token', prams, function (res) {
+        // let result = JSON.parse(res);
+        console.log('res', res)
+        App.globalData.access_token = res;
+      })
+      // let url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + d.appid + "&secret=" + d.secret;
+      // wx.request({
+      //   url: url,
+      //   data: {},
+      //   method: 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT  
+      //   // header: {}, // 设置请求的 header  
+      //   success: function (res) {
+      //     console.log('res', res)
+      //     App.globalData.access_token = res.data.access_token;
+      //   }
+      // });
+    }
+  },
+
   passSubmit(e) {
     let _this = this;
     App.globalData.formId = e.detail.formId;
@@ -169,45 +178,61 @@ Page({
           console.log("result", result)
           if (result.code == 1) {
             let _access_token = App.globalData.access_token;
-            let url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + _access_token;
-            let _jsonData = {
+            let p = {
               access_token: _access_token,
-              touser: _this.data.OpenId4Out,
+              openid: _this.data.OpenId4Out,
               template_id: 'WXeoh4UHmcuX1RyC2szpW1fzAoGtV3_pbueJ6HB2G-I',
               form_id: App.globalData.formId,
-              page: "pages/index/index",
-              data: {
-                "keyword1": { "value": _this.data.Name, "color": "#173177" },
-                "keyword2": { "value": _this.data.CreateTime, "color": "#173177" },
-                "keyword3": { "value": App.getDateTime(new Date().getTime()), "color": "#173177" },
-                "keyword4": { "value": _this.data.SName, "color": "#173177" },
-                "keyword5": { "value": "审核通过", "color": "#173177" },
-                "keyword6": { "value": "无", "color": "#173177" },
-              }
+              name: _this.data.Name,
+              CreateTime: _this.data.CreateTime,
+              NowTime: App.getDateTime(new Date().getTime()),
+              sname: _this.data.SName,
+              checkStatus: "审核通过",
+              RefuseReason: "无"
             }
-            console.log('_jsonData', _jsonData)
-            wx.request({
-              url: url,
-              data: _jsonData,
-              method: "POST",
-              success: function (res) {
-                console.log('消息发送成功', res.errMsg)
-                if (res.errMsg == 'request:ok'){
-                  App.showToast("操作成功");
-                  setTimeout(function () {
-                    wx.navigateTo({
-                      url: "../checked/index"
-                    });
-                  }, 1000)
-                }
-              },
-              fail: function (err) {
-                console.log('request fail ', err);
-              },
-              complete: function (res) {
-                console.log("request completed!");
-              }
+            App._post_form('api/visitors/sendMessage2', p, function (res) {
+              // let result = JSON.parse(res);
+              console.log('res', res)
             })
+            // let url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + _access_token;
+            // let _jsonData = {
+            //   access_token: _access_token,
+            //   touser: _this.data.OpenId4Out,
+            //   template_id: 'WXeoh4UHmcuX1RyC2szpW1fzAoGtV3_pbueJ6HB2G-I',
+            //   form_id: App.globalData.formId,
+            //   page: "pages/index/index",
+            //   data: {
+            //     "keyword1": { "value": _this.data.Name, "color": "#173177" },
+            //     "keyword2": { "value": _this.data.CreateTime, "color": "#173177" },
+            //     "keyword3": { "value": App.getDateTime(new Date().getTime()), "color": "#173177" },
+            //     "keyword4": { "value": _this.data.SName, "color": "#173177" },
+            //     "keyword5": { "value": "审核通过", "color": "#173177" },
+            //     "keyword6": { "value": "无", "color": "#173177" },
+            //   }
+            // }
+            // console.log('_jsonData', _jsonData)
+            // wx.request({
+            //   url: url,
+            //   data: _jsonData,
+            //   method: "POST",
+            //   success: function (res) {
+            //     console.log('消息发送成功', res.errMsg)
+            //     if (res.errMsg == 'request:ok'){
+            //       App.showToast("操作成功");
+            //       setTimeout(function () {
+            //         wx.navigateTo({
+            //           url: "../checked/index"
+            //         });
+            //       }, 1000)
+            //     }
+            //   },
+            //   fail: function (err) {
+            //     console.log('request fail ', err);
+            //   },
+            //   complete: function (res) {
+            //     console.log("request completed!");
+            //   }
+            // })
           } else {
             App.showToast("操作失败");
           }
@@ -242,45 +267,61 @@ Page({
       if (result.code == 1) {
         _this.setData({ show: false })
         let _access_token = App.globalData.access_token;
-        let url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + _access_token;
-        let _jsonData = {
+        let p = {
           access_token: _access_token,
-          touser: _this.data.OpenId4Out,
+          openid: _this.data.OpenId4Out,
           template_id: 'WXeoh4UHmcuX1RyC2szpW1fzAoGtV3_pbueJ6HB2G-I',
           form_id: App.globalData.formId,
-          page: "pages/index/index",
-          data: {
-            "keyword1": { "value": _this.data.Name, "color": "#173177" },
-            "keyword2": { "value": _this.data.CreateTime, "color": "#173177" },
-            "keyword3": { "value": App.getDateTime(new Date().getTime()), "color": "#173177" },
-            "keyword4": { "value": _this.data.SName, "color": "#173177" },
-            "keyword5": { "value": "审核拒绝", "color": "#173177" },
-            "keyword6": { "value": _this.data.RefuseReason, "color": "#173177" },
-          }
+          name: _this.data.Name,
+          CreateTime: _this.data.CreateTime,
+          NowTime: App.getDateTime(new Date().getTime()),
+          sname: _this.data.SName,
+          checkStatus:"审核拒绝",
+          RefuseReason: _this.data.RefuseReason
         }
-        console.log('_jsonData', _jsonData)
-        wx.request({
-          url: url,
-          data: _jsonData,
-          method: "POST",
-          success: function (res) {
-            console.log('消息发送成功', res.errMsg)
-            if (res.errMsg == 'request:ok') {
-              App.showToast("操作成功");
-              setTimeout(function () {
-                wx.navigateTo({
-                  url: "../checked/index"
-                });
-              }, 1000)
-            }
-          },
-          fail: function (err) {
-            console.log('request fail ', err);
-          },
-          complete: function (res) {
-            console.log("request completed!");
-          }
+        App._post_form('api/visitors/sendMessage2', p, function (res) {
+          // let result = JSON.parse(res);
+          console.log('res', res)
         })
+        // let url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + _access_token;
+        // let _jsonData = {
+        //   access_token: _access_token,
+        //   touser: _this.data.OpenId4Out,
+        //   template_id: 'WXeoh4UHmcuX1RyC2szpW1fzAoGtV3_pbueJ6HB2G-I',
+        //   form_id: App.globalData.formId,
+        //   page: "pages/index/index",
+        //   data: {
+        //     "keyword1": { "value": _this.data.Name, "color": "#173177" },
+        //     "keyword2": { "value": _this.data.CreateTime, "color": "#173177" },
+        //     "keyword3": { "value": App.getDateTime(new Date().getTime()), "color": "#173177" },
+        //     "keyword4": { "value": _this.data.SName, "color": "#173177" },
+        //     "keyword5": { "value": "审核拒绝", "color": "#173177" },
+        //     "keyword6": { "value": _this.data.RefuseReason, "color": "#173177" },
+        //   }
+        // }
+        // console.log('_jsonData', _jsonData)
+        // wx.request({
+        //   url: url,
+        //   data: _jsonData,
+        //   method: "POST",
+        //   success: function (res) {
+        //     console.log('消息发送成功', res.errMsg)
+        //     if (res.errMsg == 'request:ok') {
+        //       App.showToast("操作成功");
+        //       setTimeout(function () {
+        //         wx.navigateTo({
+        //           url: "../checked/index"
+        //         });
+        //       }, 1000)
+        //     }
+        //   },
+        //   fail: function (err) {
+        //     console.log('request fail ', err);
+        //   },
+        //   complete: function (res) {
+        //     console.log("request completed!");
+        //   }
+        // })
       } else {
         App.showToast("操作失败");
       }
