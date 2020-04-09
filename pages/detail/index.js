@@ -46,6 +46,7 @@ Page({
     CheckDate: "",
     EnterCode: "",
     RefuseReason: "",
+    Image: "",
     form:{
       Name: "",
       Sex: 0,
@@ -58,7 +59,8 @@ Page({
       Date:"",
       StartTime:"",
       EndTime: "",
-      Remark:""
+      Remark:"",
+      Image:""
     },
     qrcodeWidth: qrcodeWidth,
     show: false,
@@ -73,8 +75,8 @@ Page({
   },
   onLoad: function (options) {
     let _this = this;
-    console.log('item.CreateTime', options.CreateTime);
-    console.log('item.Name', options.Name);
+    // console.log('item.CreateTime', options.CreateTime);
+    // console.log('item.Image', options.Image);
     this.setData({
       Type: App.globalData.tab_bar_type,
       active: 1,
@@ -105,7 +107,8 @@ Page({
       EnterCode: (options.EnterCode == 'null' || options.EnterCode == null) ? "--" : options.EnterCode,
       OpenId4In: options.OpenId4In,
       OpenId4Out: options.OpenId4Out,
-      RefuseReason: options.RefuseReason
+      RefuseReason: options.RefuseReason,
+      Image: options.Image
     })
     console.log("data:",this.data)
     // this.setData({ 'form.Date': App.getDate(new Date().getTime()) })
@@ -169,11 +172,12 @@ Page({
         let prams = {
           Id: _this.data.Id,
           CheckStatus: "1",// 1通过，-1拒绝
-          Checker: App.globalData.userInfo.SName
+          Checker: App.globalData.userInfo.SName,
+          RefuseReason:""
         }
         console.log('prams', prams)
         // 下面调用接口
-        App._post_form("api/visitors/check", prams, function (res) {
+        App._get("api/visitors/check", prams, function (res) {
           let result = JSON.parse(res)
           console.log("result", result)
           if (result.code == 1) {
@@ -246,9 +250,9 @@ Page({
   },
   getUserInfo(event) {
     let _this = this;
-    console.log('getUserInfo',event.detail);
-    console.log('RefuseReason', _this.data.RefuseReason)
-    console.log("refuseSubmit");
+    // console.log('getUserInfo',event.detail);
+    // console.log('RefuseReason', _this.data.RefuseReason)
+    // console.log("refuseSubmit");
     if (App.isNull(_this.data.RefuseReason)){
       App.showToast("拒绝理由不能为空");
       return;
@@ -261,7 +265,7 @@ Page({
     }
     console.log('prams', prams)
     // 下面调用接口
-    App._post_form("api/visitors/check", prams, function (res) {
+    App._get("api/visitors/check", prams, function (res) {
       let result = JSON.parse(res)
       console.log("result", result)
       if (result.code == 1) {

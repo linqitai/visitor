@@ -46,6 +46,7 @@ Page({
     CheckDate: "",
     EnterCode: "",
     RefuseReason: "",
+    AvatarUrl: "",
     form:{
       Name: "",
       Sex: 0,
@@ -58,7 +59,7 @@ Page({
       Date:"",
       StartTime:"",
       EndTime: "",
-      Remark:""
+      Remark:"",
     },
     qrcodeWidth: qrcodeWidth,
     show: false,
@@ -72,19 +73,21 @@ Page({
     let prams = {
       EnterCode: _this.data.EnterCode
     }
-    App._post_form(url, prams, function (res) {
+    App._get(url, prams, function (res) {
       console.log("res", res)
       let result = JSON.parse(res)
       if (result.code == 1) {
         _this.setData(result.data[0])
         console.log("_this.data",_this.data)
-        _this.setData({
-          Sex: App.globalData.sex_array[result.data[0].Sex],
-          Reason: App.globalData.reason_array[result.data[0].Reason],
-          Number: App.globalData.number_array[result.data[0].Number],
-          Remark: App.isNullReturnLine(result.data[0].Remark),
-          SMPhone: App.isNullReturnLine(result.data[0].SMPhone)
-        })
+        if (result.data[0]){
+          _this.setData({
+            Sex: App.globalData.sex_array[result.data[0].Sex],
+            Reason: App.globalData.reason_array[result.data[0].Reason],
+            Number: App.globalData.number_array[result.data[0].Number],
+            Remark: App.isNullReturnLine(result.data[0].Remark),
+            SMPhone: App.isNullReturnLine(result.data[0].SMPhone)
+          })
+        }
       }
     });
   },

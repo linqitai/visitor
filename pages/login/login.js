@@ -14,10 +14,8 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
   },
   getPhoneInput(e){
-    console.log("e",e.detail)
     let _this = this;
     _this.setData({
       Phone: e.detail
@@ -62,7 +60,12 @@ Page({
         p.OpenId = App.globalData.openid;
         p.Phone = _this.data.Phone;
         console.log('p',p)
-        App._post_form('api/visitors/addWXUserInfo', p, function (res) {
+        // let str = App.jsonToStr(p);
+        // console.log('str', str);
+        // let params = {
+        //   str:str
+        // }
+        App._get('api/visitors/addWXUserInfo', p, function (res) {
           console.log('res',res)
           let result = JSON.parse(res)
           if(result.code==1){

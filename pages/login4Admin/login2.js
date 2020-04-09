@@ -7,11 +7,11 @@ Page({
    */
   data: {
     form:{
-      SMPhone: "",
-      SInitialPassword: "",
+      SMPhone:"",
+      SInitialPassword:"",
       OpenId:""
     },
-    maxlengthPhone: 11,
+    maxlengthPhone:11,
     username:'',
     password:''
   },
@@ -34,7 +34,8 @@ Page({
     });
     console.log('App.globalData.openid', App.globalData.openid)
     _this.setData({
-      'form.OpenId4In': App.globalData.openid
+      'form.OpenId4In': App.globalData.openid,
+      'form.IsMPAdmin': "1"
     })
     console.log('form', _this.data.form)
     if (App.isNull(_this.data.form.SMPhone)) {
@@ -43,7 +44,7 @@ Page({
     if (App.isNull(_this.data.form.SInitialPassword)) {
       App.showToast("密码不可为空"); return;
     }
-    App._get("api/visitors/login", _this.data.form, function (res) {
+    App._get("api/visitors/login4Admin", _this.data.form, function (res) {
       let result = JSON.parse(res)
       console.log("result", result)
       if (result.code == 1) {

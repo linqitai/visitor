@@ -16,13 +16,17 @@ Page({
     left: '',
     windowWidth: '',
     windowHeight: '',
-    maxlengthPhome: 11,
+    maxlengthPhone: 11,
+    maxlengthSName: 10,
     maxlengthIndentityNumber:18,
     form:{
-      Name: "",
-      Phone:"",
-      Type: App.globalData.tab_bar_type
+      SNo:"",
+      SSex:"0",
+      SName: "",
+      SMPhone:"",
+      SCarNo:"",
     },
+    visible1:false,
     type: '',
     count:0,
     dataList:[],
@@ -33,78 +37,101 @@ Page({
   onShow: function () {
     // 刷新组件
     this.refreshView = this.selectComponent("#refreshView")
-    // wx.setNavigationBarTitle({
-    //   title: '预约审批'
-    // })
+    wx.setNavigationBarTitle({
+      title: '信息录入'
+    })
     wx.setNavigationBarColor({
       frontColor: '#ffffff', // 必写项
       backgroundColor: "#228B22" // 传递的颜色值
     })
-    this.getUncheckList();
   },
   onLoad: function (options) {
     let _this = this;
-    console.log(App.globalData.tab_bar_type, "App.globalData.tab_bar_type")
-    _this.setData({
-      active: 0,
-      tab_bar: App.getTab_bar(App.globalData.tab_bar_type),
-      type: App.globalData.tab_bar_type,
-      'form.Type': App.globalData.tab_bar_type
-    })
-    console.log("history")
-    console.log('type', _this.data.type)
-    // _this.getUncheckList();
-  },
-  getUncheckList(){
-    let _this = this;
-    let prams = {
-      Type: App.globalData.tab_bar_type,
-      Phone: App.nullReturnEmpty(_this.data.form.Phone),
-      Name: App.nullReturnEmpty(_this.data.form.Name),
-      CheckStatus:0 //0 未审核 1 已审核 -1 审核拒绝
+    //console.log('onLoad');
+    let params = {
+      SDId: App.globalData.userInfo.SDId
     }
-    console.log('prams', prams)
-    let url = "api/visitors/getListByNameOrPhone"
-    App._get(url, prams, function (res) {
-      let result = JSON.parse(res)
-      console.log('result', result)
-      if (result.code == 1) {
-        if (result.count == 0) {
-          App.showToast("暂无记录")
-        }
-        _this.setData({
-          count: result.count,
-          dataList: result.data
-        })
-      } else {
-        console.log("msg", result.msg)
-        App.showToast(result.msg);
-      }
+    App._get('api/visitors/getStaffList', params, function (res) {
+      //console.log('getStaffList', res);
+      let result = JSON.parse(res);
+      _this.setData({ dataList: result.data });
     })
   },
-  bindStartDateChange: function (e) {
-    console.log('picker发送选择改变，携带值为', e.detail.value);
+  handleOpen1() {
     this.setData({
-      'form.StartDate': e.detail.value
+      visible1: true
     });
   },
-  bindEndDateChange: function (e) {
-    console.log('picker发送选择改变，携带值为', e.detail.value);
+  handleClose1() {
     this.setData({
-      'form.EndDate': e.detail.value
+      visible1: false
+    });
+  },
+  addStaffBtn(){
+    let _this = this;
+    //console.log("addStaffBtn");
+    //console.log("form",_this.data.form);
+  },
+  bindSexPickerChange(e) {
+    //console.log('sex', e.detail.value)
+    this.setData({
+      'form.SSex': e.detail.value
+    });
+  },
+  deleteBtn(event){
+    let _this = this;
+    console.log("event", event.currentTarget.dataset.id);
+    let id = event.currentTarget.dataset.id;
+    let name = event.currentTarget.dataset.name;
+    App.showModel(`您确定要删除【${name}】吗？`,function(){
+      console.log("delete");
+      let params = {
+        Id: id
+      }
+      App._post_form("api/visitors/deleteStaffInfo", params, function (res) {
+        let result = JSON.parse(res);
+        console.log('result', result);
+        if (result.code == 0) {
+          App.showError('删除失败');
+        } else {
+          App.toast('删除成功');
+          _this.onLoad();
+        }
+      })
     });
   },
   formSubmit(e){
     let _this = this;
-    console.log('form', e.detail.value)
     _this.setData({
       form: e.detail.value
     });
-    _this.setData({
-      'form.Type': App.globalData.tab_bar_type
+    if (_this.data.form.SNo.length > 11) {
+      App.showError("请填写少于11个字的编号"); return;
+    }
+    if (_this.data.form.SName.length > 20 || _this.data.form.SName.length < 2) {
+      App.showError("请填写2~20个字的姓名"); return;
+    }
+    if (_this.data.form.SCarNo.length > 10) {
+      App.showError("请填写少于10个字的车牌号"); return;
+    }
+    if (!(/^(1[3-9])\d{9}$/).test(_this.data.form.SMPhone)){
+      App.showError("请填写合法手机号");return;
+    }
+    this.setData({
+      'form.SDId': App.globalData.userInfo.SDId,
+      'form.SDDetailName': App.globalData.userInfo.SDDetailName
     });
-    console.log('App.globalData.tab_bar_type', App.globalData.tab_bar_type)
-    _this.getUncheckList();
+    //console.log('form', _this.data.form)
+    App._post_form("api/visitors/addStaff", _this.data.form, function (res) {
+      let result = JSON.parse(res);
+      console.log('result', result);
+      if (result.code==0){
+        App.showError(result.msg);
+      }else{
+        App.toast("添加成功");
+        _this.onLoad()
+      }
+    })
   },
   to_shopcart_view(){
     wx.navigateTo({

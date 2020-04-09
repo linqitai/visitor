@@ -1,7 +1,17 @@
 /* 搜索框组件 */
 /* @import "components/search/search.wxss"; */
 
-
+.myCanvasBox{
+  margin-top: 10px;
+  text-align: center;
+}
+.myCanvas{
+  text-align: center;
+  width: 200px;
+  height: 300px;
+  margin-left: 50%;
+  transform: translateX(-50%)
+}
 .form{
   width: 100%;
   height: auto;
