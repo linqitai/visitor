@@ -39,7 +39,8 @@
       </van-col>
       <van-col span="2">
         <view class="iconBox" bindtap="deleteBtn" data-id="{{item.Id}}" data-name="{{item.SName}}">
-          <i-icon type="trash" size="20" color="#e22018"/>
+          <!-- <i-icon type="trash" size="20" color="#e22018"/> -->
+          <van-icon name="delete" size="20" color="#e22018"/>
         </view>
       </van-col>
     </van-row>

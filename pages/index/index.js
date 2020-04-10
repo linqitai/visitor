@@ -149,10 +149,10 @@ Page({
               SDDetailName : App.globalData.userInfo.SDDetailName,
               ordercode : result.ordercode
             }
-            App._post_form('api/visitors/sendMessage', p, function (res) {
-              // let result = JSON.parse(res);
-              console.log('res', res)
-            })
+            // App._post_form('api/visitors/sendMessage', p, function (res) {
+            //   // let result = JSON.parse(res);
+            //   console.log('res', res)
+            // })
             // let url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + _access_token;
             // console.log('result.ordercode', result.ordercode)
             // let _jsonData = {

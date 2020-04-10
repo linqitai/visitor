@@ -27,8 +27,8 @@
 
     </form >
     <view class="enterCodeBox mt-40">
-    <view style="line-height:18px;text-align:center">本人头像</view>
-    <image class='avatarUrl' src="{{Image}}" style="width:100%;min-height:300px;" ></image>
+    <view style="line-height:18px;text-align:center" wx:if="{{Image}}">本人头像</view>
+    <image class='avatarUrl' src="{{Image}}" style="width:100%;min-height:300px;" wx:if="{{Image}}"></image>
     </view>
     <view class='enterCodeBox' wx:if="{{CheckStatus == '1'}}">
       <canvas class='canvas' style="width:{{qrcodeWidth}}px; height:{{qrcodeWidth}}px;" canvas-id='canvas' bindlongtap='save'></canvas>

@@ -4,11 +4,11 @@
     "navigationBarTextStyle": "white",
     "usingComponents": {
       "refresh-view": "/components/RefreshView/refresh-view",
-      "tab-bar": "/components/TabBar/tabbar",
-      "van-field": "/dist/field/index",
-      "van-action-sheet": "/dist/action-sheet/index",
-      "van-radio": "/dist/radio/index",
-      "van-radio-group": "/dist/radio-group/index",
-      "i-input": "/iView/input/index"
+      "tab-bar": "/components/TabBar1/tabbar",
+      "van-field": "/components/field/index",
+      "van-action-sheet": "/components/action-sheet/index",
+      "van-radio": "/components/radio/index",
+      "van-radio-group": "/components/radio-group/index",
+      "i-input": "/components/input/index"
     }
 }

@@ -9,5 +9,8 @@
       <label class='label'>密  码</label><input value="{{password}}" type='password' class='username_text' name='SInitialPassword' placeholder="请输入密码" clearable/>
     </view>
     <button class='btn' type="primary" formType="submit"> 登   录 </button>
+
+    <view wx:if="{{form.SMPhone}}">用户名:{{form.SMPhone}}</view>
+    <view wx:if="{{form.SInitialPassword}}">密  码:{{form.SInitialPassword}}</view>
   </form>
 </view>

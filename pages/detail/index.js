@@ -181,6 +181,11 @@ Page({
           let result = JSON.parse(res)
           console.log("result", result)
           if (result.code == 1) {
+            // setTimeout(function () {
+            //   wx.navigateTo({
+            //     url: "../checked/index"
+            //   });
+            // }, 1000)
             let _access_token = App.globalData.access_token;
             let p = {
               access_token: _access_token,
@@ -194,49 +199,48 @@ Page({
               checkStatus: "审核通过",
               RefuseReason: "无"
             }
-            App._post_form('api/visitors/sendMessage2', p, function (res) {
-              // let result = JSON.parse(res);
-              console.log('res', res)
-            })
-            // let url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + _access_token;
-            // let _jsonData = {
-            //   access_token: _access_token,
-            //   touser: _this.data.OpenId4Out,
-            //   template_id: 'WXeoh4UHmcuX1RyC2szpW1fzAoGtV3_pbueJ6HB2G-I',
-            //   form_id: App.globalData.formId,
-            //   page: "pages/index/index",
-            //   data: {
-            //     "keyword1": { "value": _this.data.Name, "color": "#173177" },
-            //     "keyword2": { "value": _this.data.CreateTime, "color": "#173177" },
-            //     "keyword3": { "value": App.getDateTime(new Date().getTime()), "color": "#173177" },
-            //     "keyword4": { "value": _this.data.SName, "color": "#173177" },
-            //     "keyword5": { "value": "审核通过", "color": "#173177" },
-            //     "keyword6": { "value": "无", "color": "#173177" },
-            //   }
-            // }
-            // console.log('_jsonData', _jsonData)
-            // wx.request({
-            //   url: url,
-            //   data: _jsonData,
-            //   method: "POST",
-            //   success: function (res) {
-            //     console.log('消息发送成功', res.errMsg)
-            //     if (res.errMsg == 'request:ok'){
-            //       App.showToast("操作成功");
-            //       setTimeout(function () {
-            //         wx.navigateTo({
-            //           url: "../checked/index"
-            //         });
-            //       }, 1000)
-            //     }
-            //   },
-            //   fail: function (err) {
-            //     console.log('request fail ', err);
-            //   },
-            //   complete: function (res) {
-            //     console.log("request completed!");
-            //   }
+            // App._post_form('api/visitors/sendMessage2', p, function (res) {
+            //   console.log('res', res)
             // })
+            let url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + _access_token;
+            let _jsonData = {
+              access_token: _access_token,
+              touser: _this.data.OpenId4Out,
+              template_id: 'WXeoh4UHmcuX1RyC2szpW1fzAoGtV3_pbueJ6HB2G-I',
+              form_id: App.globalData.formId,
+              page: "pages/index/index",
+              data: {
+                "keyword1": { "value": _this.data.Name, "color": "#173177" },
+                "keyword2": { "value": _this.data.CreateTime, "color": "#173177" },
+                "keyword3": { "value": App.getDateTime(new Date().getTime()), "color": "#173177" },
+                "keyword4": { "value": _this.data.SName, "color": "#173177" },
+                "keyword5": { "value": "审核通过", "color": "#173177" },
+                "keyword6": { "value": "无", "color": "#173177" },
+              }
+            }
+            console.log('_jsonData', _jsonData)
+            wx.request({
+              url: url,
+              data: _jsonData,
+              method: "POST",
+              success: function (res) {
+                console.log('消息发送成功', res.errMsg)
+                if (res.errMsg == 'request:ok'){
+                  App.showToast("操作成功");
+                  setTimeout(function () {
+                    wx.navigateTo({
+                      url: "../checked/index"
+                    });
+                  }, 1000)
+                }
+              },
+              fail: function (err) {
+                console.log('request fail ', err);
+              },
+              complete: function (res) {
+                console.log("request completed!");
+              }
+            })
           } else {
             App.showToast("操作失败");
           }

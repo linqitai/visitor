@@ -4,8 +4,8 @@
   "navigationBarTextStyle": "white",
     "usingComponents": {
       "refresh-view": "/components/RefreshView/refresh-view",
-      "tab-bar": "/components/TabBar/tabbar",
-      "van-field": "/dist/field/index",
-      "i-input": "/iView/input/index"
+      "tab-bar": "/components/TabBar1/tabbar",
+      "van-field": "/components/field/index",
+      "i-input": "/components/input/index"
     }
 }

@@ -14,7 +14,8 @@ Page({
     isShow:false
   },
   onShow: function () {
-    
+    let _this = this;
+    _this.login();
   },
   /**
    * 生命周期函数--监听页面加载
@@ -34,36 +35,56 @@ Page({
           let d = {
             appid: App.globalData.appid,
             secret: App.globalData.secret,
-            js_code: res.code,
-            grant_type: "authorization_code"
+            js_code: res.code
           }
-          let url = 'https://api.weixin.qq.com/sns/jscode2session?appid=' + d.appid + '&secret=' + d.secret + '&js_code=' + res.code + '&grant_type=authorization_code';
-          wx.request({
-            url: url,
-            data: {},
-            method: 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT  
-            // header: {}, // 设置请求的 header  
-            success: function (res) {
-              console.log('res', res)
-              console.log('App.globalData.openid', res.data.openid)
-              App.globalData.openid = res.data.openid;
-              wx.setStorageSync('openid', res.data.openid)
-              console.log('App.globalData.openid', App.globalData.openid)
-              let prams = {
-                OpenId: App.globalData.openid
-              }
-              console.log('prams', prams);
-              App._get('api/visitors/haveUserInfo', prams, function (res) {
-                console.log('havaUserInfo', res)
-                let result = JSON.parse(res);
-                if (result.code == 0) {
-                  wx.navigateTo({
-                    url: '../login/login',
-                  })
-                }
-              })
+          App._post_form('api/visitors/getOpenId', d, function (resOpenId) {
+            // let result = JSON.parse(res);
+            console.log('res', resOpenId);
+            App.globalData.openid = resOpenId;
+            wx.setStorageSync('openid', App.globalData.openid)
+            console.log('App.globalData.openid', App.globalData.openid)
+            let prams = {
+              OpenId: App.globalData.openid
             }
-          });
+            console.log('prams', prams);
+            App._get('api/visitors/haveUserInfo', prams, function (res) {
+              console.log('havaUserInfo', res)
+              let result = JSON.parse(res);
+              if (result.code == 0) {
+                wx.navigateTo({
+                  url: '../login/login',
+                })
+              }
+            })
+          })
+
+          // let url = 'https://api.weixin.qq.com/sns/jscode2session?appid=' + d.appid + '&secret=' + d.secret + '&js_code=' + res.code + '&grant_type=authorization_code';
+          // wx.request({
+          //   url: url,
+          //   data: {},
+          //   method: 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT  
+          //   // header: {}, // 设置请求的 header  
+          //   success: function (res) {
+          //     console.log('res', res)
+          //     console.log('App.globalData.openid', res.data.openid)
+          //     App.globalData.openid = res.data.openid;
+          //     wx.setStorageSync('openid', res.data.openid)
+          //     console.log('App.globalData.openid', App.globalData.openid)
+          //     let prams = {
+          //       OpenId: App.globalData.openid
+          //     }
+          //     console.log('prams', prams);
+          //     App._get('api/visitors/haveUserInfo', prams, function (res) {
+          //       console.log('havaUserInfo', res)
+          //       let result = JSON.parse(res);
+          //       if (result.code == 0) {
+          //         wx.navigateTo({
+          //           url: '../login/login',
+          //         })
+          //       }
+          //     })
+          //   }
+          // });
         } else {
           console.log('获取用户登录态失败！' + res.errMsg)
         }

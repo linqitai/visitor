@@ -1,40 +1,9 @@
 <view class='page'>
 
-<image class="img" src="../../images/logo.png"></image>
-<button class='btn1' type="default" bindtap='toStaff'> 信息录入 </button>
-<button class='btn3' type="warn" bindtap='toCheck'> 预约审批 </button>
-<button class='btn3' type="primary" bindtap="toDatePage"> 访客预约 </button>
-<button class='btn2 color-text-1' type="default" bindtap="toLogin"> 被访人预约 </button>
+  <image class="img" src="../../images/logo.png"></image>
+  <button class='btn1' type="default" bindtap='toStaff'> 信息录入 </button>
+  <button class='btn3' type="warn" bindtap='toCheck'> 预约审批 </button>
+  <button class='btn3' type="primary" bindtap="toDatePage"> 访客预约 </button>
+  <button class='btn2 color-text-1' type="default" bindtap="toLogin"> 被访人预约 </button>
 
-  <view class='searchBox'>
-    <!-- <van-field label="预约码" placeholder="根据预约码查询预约信息" clearable="{{ true }}" border="{{ false }}"/> -->
-    <!-- <label>预约码</label>input
-    <van-button type="info" bindtap="searchInfo">查 询</van-button> -->
-    <van-cell-group>
-      <van-field
-        center
-        clearable
-        placeholder="根据预约码查询预约信息"
-        border="{{ false }}"
-        use-button-slot
-        bind:change="onChange"
-      >
-        <van-button slot="button" size="small" type="primary" bindtap="searchInfo">查询</van-button>
-      </van-field>
-    </van-cell-group>
-  </view>
-  <!-- <view class="modelBox">
-    <i-modal title="内部人员权限验证" visible="{{ visible1 }}" show-ok="{{isShow}}" show-cancel="{{isShow}}" action-mode="vertical">
-      <form bindsubmit="formSubmit" report-submit="true">
-        <view class="placeholder10"></view>
-          <van-field label="权限码" value="{{ form.qxm }}" name="qxm" clearable placeholder="需填写权限码" border="{{ false }}" type="password"></van-field>
-        <view class="placeholder10"></view>
-        <view class='wings_blank mt-20'>
-          <button class='submit' type="primary" formType="submit" size='default'> 提 交 </button>
-          <view class="placeholder10"></view>
-          <button type="default" size='default' bindtap="handleClose1"> 取 消 </button>
-        </view>
-      </form >
-    </i-modal>  
-  </view> -->
 </view>

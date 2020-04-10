@@ -53,24 +53,25 @@ Page({
     // App._get("api/visitors/testLink",{},function(res){
     //   console.log('res',res)
     // })
-    if (App.globalData.access_token == "") {
-      let d = {
-        appid: App.globalData.appid,
-        secret: App.globalData.secret,
-        grant_type: "client_credential"
-      }
-      let url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + d.appid + "&secret=" + d.secret;
-      wx.request({
-        url: url,
-        data: {},
-        method: 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT  
-        // header: {}, // 设置请求的 header  
-        success: function (res) {
-          console.log('res', res)
-          App.globalData.access_token = res.data.access_token;
-        }
-      });
-    }
+    
+    // if (App.globalData.access_token == "") {
+    //   let d = {
+    //     appid: App.globalData.appid,
+    //     secret: App.globalData.secret,
+    //     grant_type: "client_credential"
+    //   }
+    //   let url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + d.appid + "&secret=" + d.secret;
+    //   wx.request({
+    //     url: url,
+    //     data: {},
+    //     method: 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT  
+    //     // header: {}, // 设置请求的 header  
+    //     success: function (res) {
+    //       console.log('res', res)
+    //       App.globalData.access_token = res.data.access_token;
+    //     }
+    //   });
+    // }
   },
   onLoad: function (options) {
     let _this = this;
@@ -283,60 +284,62 @@ Page({
       CheckStatus: '0'
     }
     console.log('params', params);
-    App.showModel("提交后不得修改，您确定要提交此访客单吗？", function () {
-      console.log("确定");
-      // 下面调用接口
-      App._post_form("api/visitors/add4Out", params, function (res) {
-        console.log("res", res)
-        let result = JSON.parse(res)
-        if (result.code == 1) {
-          App.showToast("数据提交成功");
-          setTimeout(function () {
-            wx.navigateTo({
-              url: '../history/index',
-            })
-          }, 1000)
-        } else {
-          console.log("msg", result.msg)
-          App.showToast(result.msg);
-        }
-      })
-      if (App.globalData.OpenId4In != "") {
-        App.globalData.formId = e.detail.formId;
-        let _access_token = App.globalData.access_token;
-        let url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + _access_token;
-        let _jsonData = {
-          access_token: _access_token,
-          touser: App.globalData.OpenId4In,
-          template_id: 'KDwFmfR9VfOHl2ARYLEEsuc32WMm2vcAPwAveCXiWQY',//来访申请提醒模板
-          form_id: e.detail.formId,
-          page: "pages/firstPage/firstPage",
-          data: {
-            "keyword1": { "value": _this.data.form.Name, "color": "#173177" },
-            "keyword2": { "value": _this.data.form.Phone, "color": "#173177" },
-            "keyword3": { "value": _this.data.form.Date + " " + _this.data.form.StartTime, "color": "#173177" },
-            "keyword4": { "value": _this.data.reason_array[_this.data.form.Reason] + " "+ _this.data.form.Remark, "color": "#173177" }
-            }
-        }
-        console.log('_jsonData', _jsonData)
-        wx.request({
-          url: url,
-          data: _jsonData,
-          method: 'POST',
-          success: function (res) {
-            console.log('消息发送成功', res)
-          },
-          fail: function (err) {
-            console.log('request fail ', err);
-          },
-          complete: function (res) {
-            console.log("request completed!", res);
-          }
-        })
+    App._post_form("api/visitors/add4Out", params, function (res) {
+      console.log("res", res)
+      let result = JSON.parse(res)
+      if (result.code == 1) {
+        App.showToast("数据提交成功");
+        setTimeout(function () {
+          wx.navigateTo({
+            url: '../history/index',
+          })
+        }, 1000)
       } else {
-        App.showError("被访人未用过此访客小程序，请电话联系对方登录此系统并审核确认");
+        console.log("msg", result.msg)
+        App.showToast(result.msg);
       }
     })
+    // if (App.globalData.OpenId4In != "") {
+    //   App.globalData.formId = e.detail.formId;
+    //   let _access_token = App.globalData.access_token;
+    //   let url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + _access_token;
+    //   let _jsonData = {
+    //     access_token: _access_token,
+    //     touser: App.globalData.OpenId4In,
+    //     template_id: 'KDwFmfR9VfOHl2ARYLEEsuc32WMm2vcAPwAveCXiWQY',//来访申请提醒模板
+    //     form_id: e.detail.formId,
+    //     page: "pages/firstPage/firstPage",
+    //     data: {
+    //       "keyword1": { "value": _this.data.form.Name, "color": "#173177" },
+    //       "keyword2": { "value": _this.data.form.Phone, "color": "#173177" },
+    //       "keyword3": { "value": _this.data.form.Date + " " + _this.data.form.StartTime, "color": "#173177" },
+    //       "keyword4": { "value": _this.data.reason_array[_this.data.form.Reason] + " "+ _this.data.form.Remark, "color": "#173177" }
+    //       }
+    //   }
+    //   console.log('_jsonData', _jsonData)
+    //   wx.request({
+    //     url: url,
+    //     data: _jsonData,
+    //     method: 'POST',
+    //     success: function (res) {
+    //       console.log('消息发送成功', res)
+    //     },
+    //     fail: function (err) {
+    //       console.log('request fail ', err);
+    //     },
+    //     complete: function (res) {
+    //       console.log("request completed!", res);
+    //     }
+    //   })
+    // } else {
+    //   App.showError("被访人未用过此访客小程序，请电话联系对方登录此系统并审核确认");
+    // }
+
+
+    // App.showModel("提交后不得修改，您确定要提交此访客单吗？", function () {
+    //   console.log("确定");
+     
+    // })
   },
   bindStartTimeChange: function (e) {
     console.log('picker发送选择改变，携带值为', e.detail.value);
